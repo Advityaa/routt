@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: theme("colors.bg");
+    color: theme("colors.ink");
+    font-family: theme("fontFamily.body");
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: theme("fontFamily.display");
+    color: theme("colors.ink");
+    letter-spacing: -0.01em;
+  }
+
+  ::selection {
+    background-color: theme("colors.fill");
+    color: theme("colors.navy");
+  }
+}
+
+@layer components {
+  /* The single glass surface in the whole product: the sticky nav. */
+  .nav-glass {
+    background-color: rgba(250, 252, 254, 0.72);
+    backdrop-filter: saturate(140%) blur(12px);
+    -webkit-backdrop-filter: saturate(140%) blur(12px);
+  }
+}
+
+/* Motion is small + purposeful, and fully disabled on request. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
