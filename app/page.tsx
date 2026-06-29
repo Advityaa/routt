@@ -1,3 +1,4 @@
+import Link from "next/link";
 import HeroChecklist from "@/components/HeroChecklist";
 import DestinationCard from "@/components/DestinationCard";
 import EmailCapture from "@/components/EmailCapture";
@@ -46,7 +47,7 @@ export default function HomePage() {
         {/* Faint ambient glow — the only glow in the whole product. */}
         <div
           aria-hidden
-          className="pointer-events-none absolute -top-32 left-1/2 -z-10 h-[36rem] w-[36rem] -translate-x-1/2 animate-ambient rounded-full bg-fill blur-3xl"
+          className="pointer-events-none absolute -top-32 left-1/2 -z-10 h-[20rem] w-[20rem] -translate-x-1/2 animate-ambient rounded-full bg-fill blur-3xl sm:h-[36rem] sm:w-[36rem]"
         />
         <div className="mx-auto grid max-w-6xl gap-10 px-6 pb-14 pt-12 sm:pb-16 sm:pt-16 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-12 lg:pt-24">
           <div>
@@ -64,17 +65,17 @@ export default function HomePage() {
               get caught out.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <a
-                href="#destinations"
+              <Link
+                href="/plan"
                 className="flex min-h-[44px] items-center rounded-pill bg-coral px-7 py-3 font-body text-base font-semibold text-white shadow-soft transition-transform duration-200 hover:scale-[1.03]"
               >
-                Browse destinations
-              </a>
+                Plan my trip
+              </Link>
               <a
-                href="#how"
+                href="#destinations"
                 className="flex min-h-[44px] items-center rounded-pill border border-hairline bg-white px-7 py-3 font-body text-base font-semibold text-navy shadow-soft transition-transform duration-200 hover:scale-[1.03]"
               >
-                How it works
+                Browse destinations
               </a>
             </div>
           </div>

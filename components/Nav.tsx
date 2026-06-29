@@ -44,10 +44,10 @@ export default function Nav() {
             How it works
           </Link>
           <Link
-            href="/#email"
+            href="/plan"
             className="flex min-h-[44px] items-center rounded-pill bg-navy px-4 font-semibold text-white transition-transform duration-200 hover:scale-[1.03]"
           >
-            Get the guide
+            Plan my trip
           </Link>
         </div>
       </nav>

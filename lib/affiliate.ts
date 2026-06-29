@@ -101,3 +101,21 @@ export function trackAffiliateClick(params: {
     destination: params.destination,
   });
 }
+
+/**
+ * Outbound click on a NON-commercial handoff (authoritative gov source or an
+ * info link) from the countdown. Tracked separately so it's never conflated
+ * with monetised affiliate clicks — the visa/entry trust anchor is measurable
+ * but never reported as revenue.
+ */
+export function trackHandoffClick(params: {
+  type: "authoritative" | "info";
+  category: string;
+  destination: string;
+}): void {
+  track("handoff_click", {
+    handoff_type: params.type,
+    category: params.category,
+    destination: params.destination,
+  });
+}
