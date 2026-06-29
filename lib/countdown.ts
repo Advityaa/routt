@@ -10,6 +10,9 @@ export type UrgencyState = "do-now" | "coming-up" | "later" | "done";
 
 const DAY_MS = 86_400_000;
 
+/** Default nudge window (days) when a task doesn't specify one. */
+const DEFAULT_NUDGE_DAYS = 14;
+
 /** Whole days from `now` (date-only) until the trip date (YYYY-MM-DD). */
 export function daysUntilTrip(tripDateISO: string, now: Date = new Date()): number {
   const [y, m, d] = tripDateISO.split("-").map(Number);
@@ -25,10 +28,11 @@ export function taskState(
   done: boolean
 ): UrgencyState {
   if (done) return "done";
+  const nudge = task.nudgeWindowDays ?? DEFAULT_NUDGE_DAYS;
   // Past the start-by point (or trip already here) → must act now.
   if (daysUntil <= task.leadTimeDays) return "do-now";
   // Inside the nudge window before the start-by point → on the radar.
-  if (daysUntil <= task.leadTimeDays + task.nudgeWindowDays) return "coming-up";
+  if (daysUntil <= task.leadTimeDays + nudge) return "coming-up";
   return "later";
 }
 

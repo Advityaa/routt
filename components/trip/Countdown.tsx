@@ -27,6 +27,17 @@ function todayISO(): string {
   return `${n.getFullYear()}-${m}-${d}`;
 }
 
+const MONTHS = [
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December",
+];
+
+/** "2026-06" → "June 2026". */
+function formatReviewed(ym: string): string {
+  const [y, m] = ym.split("-").map(Number);
+  return `${MONTHS[m - 1] ?? ""} ${y}`.trim();
+}
+
 export default function Countdown() {
   const [mounted, setMounted] = useState(false);
   const [trip, setTrip] = useState<SavedTrip | null>(null);
@@ -120,6 +131,12 @@ export default function Countdown() {
             <p className="mt-1 font-body text-lg font-semibold text-primary">
               {countdownHeadline(days)}
             </p>
+            {dest.lastReviewed ? (
+              <p className="mt-1 inline-flex items-center gap-1.5 font-body text-xs font-medium text-ink/45">
+                <span className="inline-block h-1.5 w-1.5 rounded-full bg-primary" aria-hidden />
+                Reviewed {formatReviewed(dest.lastReviewed)}
+              </p>
+            ) : null}
           </div>
           <button
             type="button"
@@ -153,12 +170,20 @@ export default function Countdown() {
         ) : null}
       </div>
 
-      {/* Placeholder-data notice (v1 only) */}
-      <p className="mt-4 font-body text-xs text-ink/40">
-        v1 preview — task timings and links are placeholders pending a
-        human-verified data pass. Always confirm visa details on the official
-        portal.
-      </p>
+      {/* Data-confidence notice: verified destinations vs placeholder stubs */}
+      {dest.lastReviewed ? (
+        <p className="mt-4 font-body text-xs text-ink/45">
+          Human-reviewed {formatReviewed(dest.lastReviewed)}. Visa rules change —
+          always confirm the details on the official portal before you rely on
+          them. We show ranges, never a fixed quote.
+        </p>
+      ) : (
+        <p className="mt-4 font-body text-xs text-ink/40">
+          v1 preview — this destination&apos;s timings and links are placeholders
+          pending a human-verified data pass. Always confirm visa details on the
+          official portal.
+        </p>
+      )}
 
       {/* Grouped tasks */}
       <div className="mt-8 space-y-10">
@@ -189,6 +214,30 @@ export default function Countdown() {
           );
         })}
       </div>
+
+      {/* Optional expectation-setting reference (e.g. typical cab fares) */}
+      {dest.reference ? (
+        <div className="mt-10 rounded-card border border-hairline bg-white p-6 shadow-soft">
+          <h2 className="font-display text-lg font-semibold text-ink">
+            {dest.reference.label}
+          </h2>
+          <dl className="mt-4 divide-y divide-hairline">
+            {dest.reference.rows.map((row) => (
+              <div key={row.label} className="flex items-center justify-between py-2.5">
+                <dt className="font-body text-sm text-ink/70">{row.label}</dt>
+                <dd className="font-body text-sm font-semibold text-ink">
+                  {row.value}
+                </dd>
+              </div>
+            ))}
+          </dl>
+          {dest.reference.note ? (
+            <p className="mt-3 font-body text-xs text-ink/40">
+              {dest.reference.note}
+            </p>
+          ) : null}
+        </div>
+      ) : null}
     </div>
   );
 }

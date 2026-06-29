@@ -6,7 +6,7 @@ import {
   trackHandoffClick,
 } from "@/lib/affiliate";
 import { leadLine, taskState, type UrgencyState } from "@/lib/countdown";
-import type { TripTask } from "@/lib/trip-data";
+import type { FactRanges, TripTask } from "@/lib/trip-data";
 
 const BADGE: Record<UrgencyState, string> = {
   "do-now": "border-coral/30 bg-coral/10 text-coral",
@@ -89,9 +89,44 @@ export default function TaskItem({
             </p>
           ) : null}
 
+          {task.factsRange ? <FactRangesBlock facts={task.factsRange} /> : null}
+
           {!done ? <Handoff task={task} destination={destination} /> : null}
         </div>
       </div>
+    </div>
+  );
+}
+
+const FACT_LABELS: Record<keyof FactRanges, string> = {
+  standardProcessing: "Standard processing",
+  expressProcessing: "Express option",
+  feeRangeINR: "Typical fee",
+  applyAheadRecommendation: "When to apply",
+};
+
+/** Honest "what to expect" — ranges, never a single asserted figure. */
+function FactRangesBlock({ facts }: { facts: FactRanges }) {
+  const entries = (Object.keys(FACT_LABELS) as (keyof FactRanges)[])
+    .filter((k) => facts[k])
+    .map((k) => [FACT_LABELS[k], facts[k] as string] as const);
+  if (entries.length === 0) return null;
+
+  return (
+    <div className="mt-3 rounded-xl border border-hairline bg-fill/30 px-4 py-3">
+      <p className="font-body text-xs font-semibold uppercase tracking-wider text-primary/70">
+        What to expect — ranges, not a quote
+      </p>
+      <dl className="mt-2 space-y-1.5">
+        {entries.map(([label, value]) => (
+          <div key={label} className="flex flex-col gap-0.5 sm:flex-row sm:gap-2">
+            <dt className="shrink-0 font-body text-sm font-semibold text-ink/70 sm:w-40">
+              {label}
+            </dt>
+            <dd className="font-body text-sm text-ink/70">{value}</dd>
+          </div>
+        ))}
+      </dl>
     </div>
   );
 }
@@ -132,7 +167,7 @@ function Handoff({ task, destination }: { task: TripTask; destination: string })
     );
   }
 
-  // Info: optional link, otherwise just the guidance label.
+  // Info: optional link, otherwise the why text already says it all.
   if (h.url) {
     return (
       <a
@@ -144,12 +179,16 @@ function Handoff({ task, destination }: { task: TripTask; destination: string })
         }
         className="mt-3 inline-flex min-h-[44px] items-center font-body text-sm font-semibold text-primary hover:text-navy"
       >
-        {h.label} <span aria-hidden className="ml-1">↗</span>
+        {h.label ?? "Learn more"} <span aria-hidden className="ml-1">↗</span>
       </a>
     );
   }
 
-  return (
-    <p className="mt-3 font-body text-sm font-medium text-primary">{h.label}</p>
-  );
+  if (h.label) {
+    return (
+      <p className="mt-3 font-body text-sm font-medium text-primary">{h.label}</p>
+    );
+  }
+
+  return null;
 }
