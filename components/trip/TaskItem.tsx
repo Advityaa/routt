@@ -13,6 +13,7 @@ import {
   type UrgencyState,
 } from "@/lib/countdown";
 import type { FactRanges, TripTask } from "@/lib/trip-types";
+import ForexCalculator from "./ForexCalculator";
 
 const BADGE: Record<UrgencyState, string> = {
   overdue: "border-coral/40 bg-coral/10 text-coral",
@@ -96,7 +97,15 @@ export default function TaskItem({
 
           {task.factsRange ? <FactRangesBlock facts={task.factsRange} /> : null}
 
-          {!done ? <Handoff task={task} destination={destination} /> : null}
+          {!done ? (
+            task.category === "money" && task.partnerId ? (
+              // The money task carries the forex calculator, whose CTA is the
+              // commercial handoff — so we don't also render the plain button.
+              <ForexCalculator partnerId={task.partnerId} destination={destination} />
+            ) : (
+              <Handoff task={task} destination={destination} />
+            )
+          ) : null}
         </div>
       </div>
     </div>

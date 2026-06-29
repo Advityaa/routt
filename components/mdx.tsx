@@ -1,6 +1,7 @@
 import type { MDXComponents } from "mdx/types";
 import AffiliateButton from "./AffiliateButton";
 import Checklist from "./Checklist";
+import ForexCalculator from "./trip/ForexCalculator";
 import type { PartnerId } from "@/lib/affiliate";
 
 /**
@@ -62,6 +63,9 @@ export function getMdxComponents(destination: string): MDXComponents {
     Checklist,
     AffiliateButton: (props: { partner: PartnerId; label?: string }) => (
       <AffiliateButton {...props} destination={destination} />
+    ),
+    ForexCalculator: (props: { partnerId?: PartnerId }) => (
+      <ForexCalculator {...props} destination={destination} />
     ),
   };
 }

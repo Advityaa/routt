@@ -29,15 +29,15 @@ export default function AffiliateButton({
       target="_blank"
       rel="sponsored noopener noreferrer"
       onClick={() => trackAffiliateClick({ partner: data, destination })}
-      className="group not-prose my-3 flex items-center justify-between gap-4 rounded-card border border-hairline bg-white px-5 py-4 no-underline shadow-soft transition-transform duration-200 hover:-translate-y-1 hover:shadow-lift"
+      className="group not-prose my-3 flex flex-col gap-3 rounded-card border border-hairline bg-white px-5 py-4 no-underline shadow-soft transition-transform duration-200 hover:-translate-y-1 hover:shadow-lift sm:flex-row sm:items-center sm:justify-between sm:gap-4"
     >
-      <span className="flex flex-col">
+      <span className="flex min-w-0 flex-col">
         <span className="font-body text-base font-semibold text-ink">
           {data.name}
         </span>
         <span className="font-body text-sm text-ink/60">{data.blurb}</span>
       </span>
-      <span className="shrink-0 rounded-pill bg-coral px-5 py-2.5 font-body text-sm font-semibold text-white transition-transform duration-200 group-hover:scale-[1.03]">
+      <span className="flex min-h-[44px] w-full shrink-0 items-center justify-center rounded-pill bg-coral px-5 py-2.5 text-center font-body text-sm font-semibold text-white transition-transform duration-200 group-hover:scale-[1.03] sm:w-auto">
         {label ?? `Get ${data.name}`}
       </span>
     </a>
