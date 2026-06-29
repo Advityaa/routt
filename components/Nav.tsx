@@ -23,29 +23,29 @@ export default function Nav() {
         scrolled ? "shadow-nav" : "shadow-none"
       }`}
     >
-      <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
+      <nav className="mx-auto flex h-14 max-w-6xl items-center justify-between px-5 sm:h-16 sm:px-6">
         <Link
           href="/"
-          className="font-display text-2xl font-semibold tracking-tight text-navy"
+          className="inline-flex min-h-[44px] items-center font-display text-xl font-semibold tracking-tight text-navy sm:text-2xl"
         >
           Routt
         </Link>
-        <div className="flex items-center gap-7 font-body text-sm">
+        <div className="flex items-center gap-1 font-body text-sm sm:gap-6">
           <Link
             href="/#destinations"
-            className="text-ink/70 transition-colors hover:text-navy"
+            className="hidden min-h-[44px] items-center px-2 text-ink/70 transition-colors hover:text-navy md:flex"
           >
             Destinations
           </Link>
           <Link
             href="/#how"
-            className="text-ink/70 transition-colors hover:text-navy"
+            className="hidden min-h-[44px] items-center px-2 text-ink/70 transition-colors hover:text-navy md:flex"
           >
             How it works
           </Link>
           <Link
             href="/#email"
-            className="rounded-pill bg-navy px-4 py-2 font-semibold text-white transition-transform duration-200 hover:scale-[1.03]"
+            className="flex min-h-[44px] items-center rounded-pill bg-navy px-4 font-semibold text-white transition-transform duration-200 hover:scale-[1.03]"
           >
             Get the guide
           </Link>

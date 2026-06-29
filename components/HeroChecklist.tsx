@@ -32,7 +32,7 @@ export default function HeroChecklist({
               type="button"
               onClick={() => setActiveSlug(d.slug)}
               aria-pressed={isActive}
-              className={`flex items-center gap-2 rounded-pill border px-3.5 py-1.5 font-body text-sm font-medium transition-colors ${
+              className={`flex min-h-[44px] items-center gap-2 rounded-pill border px-4 py-2 font-body text-sm font-medium transition-colors ${
                 isActive
                   ? "border-primary bg-primary text-white"
                   : "border-hairline bg-fill/40 text-ink/70 hover:border-primary/40"
@@ -45,13 +45,13 @@ export default function HeroChecklist({
         })}
       </div>
 
-      <div className="mb-1 flex items-baseline justify-between">
+      <div className="mb-1 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
         <h2 className="font-display text-xl font-semibold text-ink">
           Your first {active.title} trip
         </h2>
         <Link
           href={`/${active.slug}`}
-          className="font-body text-sm font-semibold text-primary hover:text-navy"
+          className="inline-flex min-h-[44px] items-center font-body text-sm font-semibold text-primary hover:text-navy"
         >
           Full playbook →
         </Link>

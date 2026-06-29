@@ -31,14 +31,14 @@ export default function DestinationPage({ params }: PageProps) {
     <article>
       {/* Playbook header */}
       <header className="border-b border-hairline bg-white">
-        <div className="mx-auto max-w-3xl px-6 py-12">
+        <div className="mx-auto max-w-3xl px-6 py-10 sm:py-12">
           <Link
             href="/#destinations"
-            className="font-body text-sm font-medium text-primary hover:text-navy"
+            className="inline-flex min-h-[44px] items-center font-body text-sm font-medium text-primary hover:text-navy"
           >
             ← All destinations
           </Link>
-          <div className="mt-6 flex items-center gap-3">
+          <div className="mt-4 flex items-center gap-3 sm:mt-6">
             <span className="text-4xl" aria-hidden>
               {dest.flag}
             </span>
@@ -46,10 +46,10 @@ export default function DestinationPage({ params }: PageProps) {
               {dest.country}
             </span>
           </div>
-          <h1 className="mt-4 font-display text-5xl font-semibold leading-tight text-ink">
+          <h1 className="mt-4 font-display text-4xl font-semibold leading-tight text-ink sm:text-5xl">
             {dest.title}
           </h1>
-          <p className="mt-4 font-body text-lg leading-relaxed text-ink/65">
+          <p className="mt-4 font-body text-base leading-relaxed text-ink/65 sm:text-lg">
             {dest.summary}
           </p>
         </div>

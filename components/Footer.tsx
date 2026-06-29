@@ -12,7 +12,7 @@ export default function Footer() {
           <div className="max-w-sm">
             <Link
               href="/"
-              className="font-display text-xl font-semibold text-navy"
+              className="inline-flex min-h-[44px] items-center font-display text-xl font-semibold text-navy"
             >
               Routt
             </Link>
@@ -23,19 +23,28 @@ export default function Footer() {
           </div>
           <div className="font-body text-sm">
             <p className="mb-3 font-semibold text-ink">Explore</p>
-            <ul className="space-y-2 text-ink/70">
+            <ul className="text-ink/70">
               <li>
-                <Link href="/#destinations" className="hover:text-navy">
+                <Link
+                  href="/#destinations"
+                  className="inline-flex min-h-[44px] items-center hover:text-navy"
+                >
                   Destinations
                 </Link>
               </li>
               <li>
-                <Link href="/#how" className="hover:text-navy">
+                <Link
+                  href="/#how"
+                  className="inline-flex min-h-[44px] items-center hover:text-navy"
+                >
                   How it works
                 </Link>
               </li>
               <li>
-                <Link href="/#email" className="hover:text-navy">
+                <Link
+                  href="/#email"
+                  className="inline-flex min-h-[44px] items-center hover:text-navy"
+                >
                   Get the guide
                 </Link>
               </li>

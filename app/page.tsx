@@ -48,16 +48,16 @@ export default function HomePage() {
           aria-hidden
           className="pointer-events-none absolute -top-32 left-1/2 -z-10 h-[36rem] w-[36rem] -translate-x-1/2 animate-ambient rounded-full bg-fill blur-3xl"
         />
-        <div className="mx-auto grid max-w-6xl gap-12 px-6 pb-16 pt-16 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:pt-24">
+        <div className="mx-auto grid max-w-6xl gap-10 px-6 pb-14 pt-12 sm:pb-16 sm:pt-16 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-12 lg:pt-24">
           <div>
             <span className="inline-flex items-center gap-2 rounded-pill border border-hairline bg-white px-3.5 py-1.5 font-body text-xs font-medium uppercase tracking-wider text-primary shadow-soft">
               First-trip playbooks
             </span>
-            <h1 className="mt-6 font-display text-5xl font-semibold leading-[1.05] text-ink sm:text-6xl">
+            <h1 className="mt-5 font-display text-4xl font-semibold leading-[1.08] text-ink sm:mt-6 sm:text-5xl lg:text-6xl">
               Do your first trip abroad{" "}
               <span className="text-primary">right.</span>
             </h1>
-            <p className="mt-6 max-w-xl font-body text-lg leading-relaxed text-ink/65">
+            <p className="mt-5 max-w-xl font-body text-base leading-relaxed text-ink/65 sm:mt-6 sm:text-lg">
               Which eSIM beats your carrier pack. How to carry zero-markup forex.
               The cab app locals actually use. Honest, India-specific advice for
               first-time international travellers — so you don&apos;t overpay or
@@ -66,13 +66,13 @@ export default function HomePage() {
             <div className="mt-8 flex flex-wrap gap-3">
               <a
                 href="#destinations"
-                className="rounded-pill bg-coral px-7 py-3.5 font-body text-base font-semibold text-white shadow-soft transition-transform duration-200 hover:scale-[1.03]"
+                className="flex min-h-[44px] items-center rounded-pill bg-coral px-7 py-3 font-body text-base font-semibold text-white shadow-soft transition-transform duration-200 hover:scale-[1.03]"
               >
                 Browse destinations
               </a>
               <a
                 href="#how"
-                className="rounded-pill border border-hairline bg-white px-7 py-3.5 font-body text-base font-semibold text-navy shadow-soft transition-transform duration-200 hover:scale-[1.03]"
+                className="flex min-h-[44px] items-center rounded-pill border border-hairline bg-white px-7 py-3 font-body text-base font-semibold text-navy shadow-soft transition-transform duration-200 hover:scale-[1.03]"
               >
                 How it works
               </a>
@@ -86,17 +86,17 @@ export default function HomePage() {
 
       {/* ── Destination grid ─────────────────────────────────── */}
       <section id="destinations" className="scroll-mt-24">
-        <div className="mx-auto max-w-6xl px-6 py-16">
+        <div className="mx-auto max-w-6xl px-6 py-12 sm:py-16">
           <div className="max-w-2xl">
-            <h2 className="font-display text-4xl font-semibold text-ink">
+            <h2 className="font-display text-3xl font-semibold text-ink sm:text-4xl">
               Where are you headed?
             </h2>
-            <p className="mt-3 font-body text-lg text-ink/60">
+            <p className="mt-3 font-body text-base text-ink/60 sm:text-lg">
               One focused playbook per destination. Pick yours and get sorted in
               a single read.
             </p>
           </div>
-          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
             {destinations.map((dest) => (
               <DestinationCard key={dest.slug} dest={dest} />
             ))}
@@ -106,11 +106,11 @@ export default function HomePage() {
 
       {/* ── Why Routt ────────────────────────────────────────── */}
       <section className="bg-white">
-        <div className="mx-auto max-w-6xl px-6 py-16">
-          <h2 className="font-display text-4xl font-semibold text-ink">
+        <div className="mx-auto max-w-6xl px-6 py-12 sm:py-16">
+          <h2 className="font-display text-3xl font-semibold text-ink sm:text-4xl">
             Why trust Routt
           </h2>
-          <div className="mt-10 grid gap-6 sm:grid-cols-3">
+          <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-3">
             {WHY.map((item) => (
               <div
                 key={item.title}
@@ -130,11 +130,11 @@ export default function HomePage() {
 
       {/* ── How it works ─────────────────────────────────────── */}
       <section id="how" className="scroll-mt-24">
-        <div className="mx-auto max-w-6xl px-6 py-16">
-          <h2 className="font-display text-4xl font-semibold text-ink">
+        <div className="mx-auto max-w-6xl px-6 py-12 sm:py-16">
+          <h2 className="font-display text-3xl font-semibold text-ink sm:text-4xl">
             How it works
           </h2>
-          <div className="mt-10 grid gap-6 sm:grid-cols-3">
+          <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-3">
             {HOW.map((item) => (
               <div key={item.step} className="rounded-card p-2">
                 <span className="font-display text-3xl font-semibold text-primary/40">

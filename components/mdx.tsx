@@ -12,7 +12,7 @@ export function getMdxComponents(destination: string): MDXComponents {
   return {
     h2: (props) => (
       <h2
-        className="mt-12 scroll-mt-24 border-t border-hairline pt-8 font-display text-3xl font-semibold text-ink first:mt-0 first:border-0 first:pt-0"
+        className="mt-10 scroll-mt-24 border-t border-hairline pt-7 font-display text-2xl font-semibold text-ink first:mt-0 first:border-0 first:pt-0 sm:mt-12 sm:pt-8 sm:text-3xl"
         {...props}
       />
     ),
