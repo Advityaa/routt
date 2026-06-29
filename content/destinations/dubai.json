@@ -1,0 +1,124 @@
+{
+  "slug": "dubai",
+  "city": "Dubai",
+  "title": "Dubai",
+  "country": "United Arab Emirates",
+  "flag": "🇦🇪",
+  "fromPassport": "India",
+  "lastReviewed": "2026-06",
+  "reviewNote": "Sources disagree on exact visa fees and processing times. We store RANGES and always hand off to authoritative sources. A human must re-verify visa data every ~60 days as UAE rules change frequently.",
+  "note": "Heads-up: the UAE blocks WhatsApp/FaceTime voice & video calls on local SIMs — a travel eSIM usually keeps WhatsApp video to home working. More in the connectivity task below.",
+  "tasks": [
+    {
+      "id": "passport-validity",
+      "category": "passport",
+      "title": "Check your passport is valid for 6+ months",
+      "why": "Dubai requires your passport to be valid at least 6 months from your travel date, with 2 blank pages. If it's close to expiring, renew BEFORE applying for the visa.",
+      "leadTimeDays": 45,
+      "urgencyRule": "If passport expires within ~8 months of trip, treat as DO NOW (renewal takes weeks).",
+      "handoffType": "authoritative",
+      "handoffLabel": "Check passport renewal (Passport Seva)",
+      "handoffURL": "https://www.passportindia.gov.in",
+      "assert": false
+    },
+    {
+      "id": "visa",
+      "category": "visa",
+      "title": "Sort your Dubai visa — this is task #1",
+      "why": "Indian passport holders are NOT visa-free for Dubai. Most Indians must apply for a UAE tourist visa online BEFORE flying. EXCEPTION: if you hold a valid visa or residence permit (6+ months) from the USA, UK, EU/Schengen, Australia, Canada, Japan, New Zealand, South Korea, or Singapore, you may be eligible for a visa on arrival (~14 days) — but rules around this change, so confirm on the official portal.",
+      "leadTimeDays": 21,
+      "urgencyRule": "If trip is <7 working days away, flag RED (only express may work). If >21 days, GREEN but say 'start now so you're not rushed.'",
+      "handoffType": "authoritative",
+      "handoffLabel": "Apply on official UAE ICP portal (or via your airline)",
+      "handoffURL": "https://icp.gov.ae",
+      "assert": false,
+      "factsRange": {
+        "standardProcessing": "roughly 3 to 5 working days (longer in peak season Oct–Mar)",
+        "expressProcessing": "roughly 24 to 48 hours for an extra fee",
+        "feeRangeINR": "approximately ₹6,700 to ₹9,500 for a 30-day tourist visa (varies by provider/type)",
+        "applyAheadRecommendation": "apply at least 2–3 weeks before travel; UAE immigration is closed Sat/Sun and half-day Fri"
+      }
+    },
+    {
+      "id": "documents-for-visa",
+      "category": "visa",
+      "title": "Prepare your visa documents",
+      "why": "Dubai visa applications require: passport scan (first/last page), white-background photo (35x45mm), confirmed return flight booking, and a confirmed hotel booking — even if staying with family. Mismatched or unclear documents are the #1 cause of rejection.",
+      "leadTimeDays": 22,
+      "urgencyRule": "Tie to visa task; must be ready before applying.",
+      "handoffType": "informational",
+      "handoffLabel": null,
+      "handoffURL": null,
+      "assert": false
+    },
+    {
+      "id": "travel-insurance",
+      "category": "insurance",
+      "title": "Get travel insurance",
+      "why": "Travel insurance is often required or strongly recommended for UAE entry and is genuinely worth it for medical cover abroad. Some visa packages bundle it.",
+      "leadTimeDays": 14,
+      "urgencyRule": "Should be done before visa submission if your visa type requires it.",
+      "handoffType": "commercial",
+      "handoffLabel": "Compare travel insurance",
+      "partnerId": "amazeinsurance",
+      "assert": false
+    },
+    {
+      "id": "forex-card",
+      "category": "money",
+      "title": "Order a zero-markup forex card",
+      "why": "A normal Indian card charges ~3.5% forex markup on every swipe abroad. A zero-markup travel/forex card loaded with AED avoids most of that. Order early so the physical card arrives before you fly.",
+      "leadTimeDays": 12,
+      "urgencyRule": "If trip <7 days away, suggest an instant/virtual card option since physical delivery may not arrive.",
+      "handoffType": "commercial",
+      "handoffLabel": "Compare zero-markup forex cards",
+      "partnerId": "niyo",
+      "assert": false
+    },
+    {
+      "id": "esim",
+      "category": "connectivity",
+      "title": "Buy a UAE eSIM (don't use your carrier's roaming pack)",
+      "why": "Your Indian carrier's roaming pack is the expensive default. A travel eSIM is far cheaper for data. Dubai-specific tip: the UAE blocks WhatsApp/FaceTime VOICE & VIDEO on local SIMs — but on an international travel eSIM, WhatsApp video calls home usually still work. Install before you board; activate after you land. Keep your Indian SIM for bank OTPs.",
+      "leadTimeDays": 5,
+      "urgencyRule": "Can be done last-minute (instant delivery), but remind in the final week.",
+      "handoffType": "commercial",
+      "handoffLabel": "Get a Dubai eSIM",
+      "partnerId": "airalo",
+      "assert": false
+    },
+    {
+      "id": "apps-to-install",
+      "category": "apps",
+      "title": "Install the apps you'll need on arrival",
+      "why": "Install before you fly so you're not fumbling at the airport: Careem + Uber (both accept Indian cards), Google Maps (download Dubai offline map), RTA Dubai (metro/Nol), Talabat (food delivery), Zomato Dubai.",
+      "leadTimeDays": 3,
+      "urgencyRule": "Final-week reminder.",
+      "handoffType": "informational",
+      "handoffLabel": null,
+      "handoffURL": null,
+      "assert": false
+    },
+    {
+      "id": "arrival-essentials",
+      "category": "arrival",
+      "title": "Pack your arrival essentials",
+      "why": "In your HAND luggage (not checked): passport (6+ months valid), printed return ticket, printed hotel booking, printed/saved e-visa. Carry some AED cash for the abra (~AED 1), souks, and tips. Screenshot your hotel address in Arabic + English.",
+      "leadTimeDays": 2,
+      "urgencyRule": "Final 48h reminder.",
+      "handoffType": "informational",
+      "handoffLabel": null,
+      "handoffURL": null,
+      "assert": false
+    }
+  ],
+  "reference": {
+    "label": "Typical cab fares (AED)",
+    "rows": [
+      { "label": "Airport → Downtown", "value": "50–80" },
+      { "label": "Downtown → Marina", "value": "35–55" },
+      { "label": "Airport taxi start", "value": "~25 (incl. surcharge)" }
+    ],
+    "note": "Reference ranges only, for setting expectations — not live prices. Re-verify periodically."
+  }
+}

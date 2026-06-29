@@ -4,86 +4,61 @@ import { useEffect, useMemo, useState } from "react";
 import {
   countdownHeadline,
   daysUntilTrip,
+  formatReviewed,
+  isReviewStale,
   progress,
   taskState,
   URGENCY_LABEL,
   URGENCY_ORDER,
   type UrgencyState,
 } from "@/lib/countdown";
-import { getTripDestination } from "@/lib/trip-data";
-import TripSetup, { type TripDraft } from "./TripSetup";
+import type { TripDestination, TripTask } from "@/lib/trip-types";
 import TaskItem from "./TaskItem";
 
-const STORAGE_KEY = "routt.trip.v1";
+export default function Countdown({
+  destination: dest,
+  tripDateISO,
+  onReset,
+}: {
+  destination: TripDestination;
+  tripDateISO: string;
+  onReset: () => void;
+}) {
+  // Checkbox state lives in the user's own browser, keyed per (trip, date).
+  // Non-sensitive task-completion only — never any personal/document data.
+  const storageKey = `routt.done.${dest.slug}.${tripDateISO}`;
+  const [done, setDone] = useState<string[]>([]);
 
-interface SavedTrip extends TripDraft {
-  done: string[];
-}
-
-function todayISO(): string {
-  const n = new Date();
-  const m = `${n.getMonth() + 1}`.padStart(2, "0");
-  const d = `${n.getDate()}`.padStart(2, "0");
-  return `${n.getFullYear()}-${m}-${d}`;
-}
-
-const MONTHS = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December",
-];
-
-/** "2026-06" → "June 2026". */
-function formatReviewed(ym: string): string {
-  const [y, m] = ym.split("-").map(Number);
-  return `${MONTHS[m - 1] ?? ""} ${y}`.trim();
-}
-
-export default function Countdown() {
-  const [mounted, setMounted] = useState(false);
-  const [trip, setTrip] = useState<SavedTrip | null>(null);
-
-  // Load any saved trip on the client only (avoids hydration mismatch).
   useEffect(() => {
-    setMounted(true);
     try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) setTrip(JSON.parse(raw) as SavedTrip);
+      const raw = localStorage.getItem(storageKey);
+      setDone(raw ? (JSON.parse(raw) as string[]) : []);
     } catch {
-      /* ignore corrupt storage */
+      setDone([]);
     }
-  }, []);
-
-  const persist = (next: SavedTrip | null) => {
-    setTrip(next);
-    try {
-      if (next) localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-      else localStorage.removeItem(STORAGE_KEY);
-    } catch {
-      /* storage unavailable — in-memory still works for the session */
-    }
-  };
-
-  const start = (draft: TripDraft) => persist({ ...draft, done: [] });
-  const reset = () => persist(null);
+  }, [storageKey]);
 
   const toggle = (taskId: string) => {
-    if (!trip) return;
-    const has = trip.done.includes(taskId);
-    persist({
-      ...trip,
-      done: has
-        ? trip.done.filter((id) => id !== taskId)
-        : [...trip.done, taskId],
+    setDone((prev) => {
+      const next = prev.includes(taskId)
+        ? prev.filter((id) => id !== taskId)
+        : [...prev, taskId];
+      try {
+        localStorage.setItem(storageKey, JSON.stringify(next));
+      } catch {
+        /* storage unavailable — in-memory still works this session */
+      }
+      return next;
     });
   };
 
-  const dest = trip ? getTripDestination(trip.destination) : undefined;
-  const days = trip ? daysUntilTrip(trip.tripDate) : 0;
+  const days = daysUntilTrip(tripDateISO);
+  const doneSet = useMemo(() => new Set(done), [done]);
 
+  // Group by urgency, then sort longest-lead-first within each group.
   const groups = useMemo(() => {
-    if (!dest || !trip) return null;
-    const doneSet = new Set(trip.done);
-    const byState: Record<UrgencyState, typeof dest.tasks> = {
+    const byState: Record<UrgencyState, TripTask[]> = {
+      overdue: [],
       "do-now": [],
       "coming-up": [],
       later: [],
@@ -92,24 +67,14 @@ export default function Countdown() {
     for (const task of dest.tasks) {
       byState[taskState(task, days, doneSet.has(task.id))].push(task);
     }
+    for (const state of URGENCY_ORDER) {
+      byState[state].sort((a, b) => b.leadTimeDays - a.leadTimeDays);
+    }
     return byState;
-  }, [dest, trip, days]);
+  }, [dest.tasks, days, doneSet]);
 
-  // Pre-hydration: render nothing structural to keep SSR + client in sync.
-  if (!mounted) {
-    return <div className="min-h-[60vh]" aria-hidden />;
-  }
-
-  if (!trip || !dest || !groups) {
-    return (
-      <div className="mx-auto max-w-6xl px-6 py-12 sm:py-16">
-        <TripSetup initial={trip} onStart={start} todayISO={todayISO()} />
-      </div>
-    );
-  }
-
-  const doneSet = new Set(trip.done);
-  const prog = progress(dest.tasks.length, trip.done.length);
+  const prog = progress(dest.tasks.length, done.length);
+  const stale = isReviewStale(dest.lastReviewed);
 
   return (
     <div className="mx-auto max-w-3xl px-6 py-10 sm:py-14">
@@ -140,7 +105,7 @@ export default function Countdown() {
           </div>
           <button
             type="button"
-            onClick={reset}
+            onClick={onReset}
             className="inline-flex min-h-[44px] items-center font-body text-sm font-semibold text-ink/50 hover:text-navy"
           >
             Change trip
@@ -151,7 +116,7 @@ export default function Countdown() {
         <div className="mt-6">
           <div className="flex items-center justify-between font-body text-sm">
             <span className="font-semibold text-ink">
-              {prog.done} of {prog.total} done
+              {prog.done} of {prog.total} sorted
             </span>
             <span className="text-ink/50">{prog.percent}%</span>
           </div>
@@ -170,22 +135,20 @@ export default function Countdown() {
         ) : null}
       </div>
 
-      {/* Data-confidence notice: verified destinations vs placeholder stubs */}
-      {dest.lastReviewed ? (
-        <p className="mt-4 font-body text-xs text-ink/45">
-          Human-reviewed {formatReviewed(dest.lastReviewed)}. Visa rules change —
-          always confirm the details on the official portal before you rely on
-          them. We show ranges, never a fixed quote.
+      {/* Honesty-about-staleness note */}
+      {dest.lastReviewed && stale ? (
+        <p className="mt-4 rounded-card border border-hairline bg-fill/40 px-4 py-3 font-body text-xs leading-relaxed text-ink/55">
+          Info last reviewed {formatReviewed(dest.lastReviewed)} — rules change,
+          so verify visa details on the official portal before you rely on them.
         </p>
       ) : (
-        <p className="mt-4 font-body text-xs text-ink/40">
-          v1 preview — this destination&apos;s timings and links are placeholders
-          pending a human-verified data pass. Always confirm visa details on the
+        <p className="mt-4 font-body text-xs text-ink/45">
+          We show ranges, never a fixed quote. Always confirm visa details on the
           official portal.
         </p>
       )}
 
-      {/* Grouped tasks */}
+      {/* Grouped + sorted tasks */}
       <div className="mt-8 space-y-10">
         {URGENCY_ORDER.map((state) => {
           const tasks = groups[state];
@@ -204,6 +167,7 @@ export default function Countdown() {
                     key={task.id}
                     task={task}
                     destination={dest.slug}
+                    tripDateISO={tripDateISO}
                     daysUntil={days}
                     done={doneSet.has(task.id)}
                     onToggle={() => toggle(task.id)}

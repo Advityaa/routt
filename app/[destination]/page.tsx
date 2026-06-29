@@ -52,6 +52,12 @@ export default function DestinationPage({ params }: PageProps) {
           <p className="mt-4 font-body text-base leading-relaxed text-ink/65 sm:text-lg">
             {dest.summary}
           </p>
+          <Link
+            href={`/plan?dest=${dest.slug}`}
+            className="mt-6 inline-flex min-h-[48px] items-center rounded-pill bg-coral px-7 font-body text-base font-semibold text-white shadow-soft transition-transform duration-200 hover:scale-[1.03]"
+          >
+            Plan my {dest.title} trip →
+          </Link>
         </div>
       </header>
 
