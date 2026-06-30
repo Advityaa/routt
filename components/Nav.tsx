@@ -32,6 +32,12 @@ export default function Nav() {
         </Link>
         <div className="flex items-center gap-1 font-body text-sm sm:gap-6">
           <Link
+            href="/canvas"
+            className="hidden min-h-[44px] items-center px-2 text-ink/70 transition-colors hover:text-navy md:flex"
+          >
+            My Canvas
+          </Link>
+          <Link
             href="/guides"
             className="hidden min-h-[44px] items-center px-2 text-ink/70 transition-colors hover:text-navy md:flex"
           >

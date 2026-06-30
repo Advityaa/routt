@@ -26,6 +26,14 @@ export default function Footer() {
             <ul className="text-ink/70">
               <li>
                 <Link
+                  href="/canvas"
+                  className="inline-flex min-h-[44px] items-center hover:text-navy"
+                >
+                  My Canvas
+                </Link>
+              </li>
+              <li>
+                <Link
                   href="/guides"
                   className="inline-flex min-h-[44px] items-center hover:text-navy"
                 >

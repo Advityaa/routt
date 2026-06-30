@@ -10,6 +10,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: url("/"), priority: 1 },
     { url: url("/plan"), priority: 0.9 },
     { url: url("/guides"), priority: 0.8 },
+    { url: url("/canvas"), priority: 0.5 },
   ];
 
   const playbooks: MetadataRoute.Sitemap = getDestinationSlugs().map((slug) => ({
