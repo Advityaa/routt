@@ -1,109 +1,97 @@
 "use client";
 
-import Link from "next/link";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
-import Checklist from "@/components/Checklist";
-import DestinationImage from "@/components/DestinationImage";
+import { MapPin, Calendar, Search } from "lucide-react";
 import type { DestinationMeta } from "@/lib/content";
 import { getTheme, themeVars } from "@/lib/theme";
 
+function todayISO(): string {
+  const n = new Date();
+  return `${n.getFullYear()}-${`${n.getMonth() + 1}`.padStart(2, "0")}-${`${n.getDate()}`.padStart(2, "0")}`;
+}
+
 /**
- * The home hero, themed live. Hovering or tapping a destination shifts the
- * accent + hero photo with a smooth transition; before any pick it's clean
- * Routt blue. The interactive checklist stays the focal point.
+ * Immersive, full-bleed hero. A high-quality destination photo (slow ken-burns,
+ * CSS only) sits edge-to-edge; selecting or hovering a destination crossfades
+ * the image and shifts the accent. A floating frosted-glass panel carries the
+ * primary action: destination + dates + "Plan my trip".
  *
- * The theme is an accent layer only — base brand (blue, coral, ink) is fixed.
+ * Theming is an accent layer only — nav + the coral action stay brand-blue.
  */
 export default function HomeHero({ destinations }: { destinations: DestinationMeta[] }) {
-  const [selected, setSelected] = useState<string | null>(null);
+  const router = useRouter();
+  const [selected, setSelected] = useState(destinations[0]?.slug ?? "");
   const [hovered, setHovered] = useState<string | null>(null);
+  const [date, setDate] = useState("");
 
-  const activeSlug = hovered ?? selected; // null = brand-blue default
+  const activeSlug = hovered ?? selected;
   const theme = getTheme(activeSlug);
-  const content =
-    destinations.find((d) => d.slug === activeSlug) ?? destinations[0];
+  const active = destinations.find((d) => d.slug === activeSlug) ?? destinations[0];
+
+  const plan = () =>
+    router.push(`/plan?dest=${selected}${date ? `&date=${date}` : ""}`);
 
   return (
     <section
       style={themeVars(theme)}
-      className="theme-transition relative overflow-hidden bg-bg"
+      className="theme-transition relative flex min-h-[36rem] flex-col justify-end overflow-hidden text-white sm:h-[88vh]"
     >
-      {/* Destination photo behind the hero (only once a destination is active) */}
-      {activeSlug && theme.heroImage ? (
-        <div key={activeSlug} className="absolute inset-0 -z-10 animate-fade-in">
-          <DestinationImage
-            src={theme.heroImage}
-            alt={theme.mood}
-            sizes="100vw"
-            scrim={false}
-            priority
-            className="h-full w-full"
-          />
-        </div>
-      ) : null}
-
-      {/* Legibility masks: keep the text side light. Desktop fades left→right,
-          mobile fades top→bottom. */}
-      <div
-        aria-hidden
-        className="absolute inset-0 -z-10 hidden sm:block"
-        style={{
-          background:
-            "linear-gradient(to right, #FAFCFE 0%, rgba(250,252,254,0.92) 34%, rgba(250,252,254,0.35) 72%, rgba(250,252,254,0.1) 100%)",
-        }}
-      />
-      <div
-        aria-hidden
-        className="absolute inset-0 -z-10 sm:hidden"
-        style={{
-          background:
-            "linear-gradient(180deg, rgba(250,252,254,0.94) 30%, rgba(250,252,254,0.74) 100%)",
-        }}
-      />
-
-      {/* Faint themed ambient glow — the only glow in the product */}
-      <div
-        aria-hidden
-        className="theme-transition pointer-events-none absolute -top-32 left-1/2 -z-10 h-[20rem] w-[20rem] -translate-x-1/2 animate-ambient rounded-full opacity-20 blur-3xl sm:h-[34rem] sm:w-[34rem]"
-        style={{ backgroundColor: "var(--accent)" }}
-      />
-
-      <div className="mx-auto grid max-w-6xl gap-10 px-6 pb-14 pt-12 sm:pb-16 sm:pt-16 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-12 lg:pt-24">
-        <div>
-          <span className="inline-flex items-center gap-2 rounded-pill border border-hairline bg-white px-3.5 py-1.5 font-body text-xs font-medium uppercase tracking-wider accent-text shadow-soft">
-            First-trip playbooks
-          </span>
-          <h1 className="mt-5 font-display text-4xl font-semibold leading-[1.08] text-ink sm:mt-6 sm:text-5xl lg:text-6xl">
-            Do your first trip abroad{" "}
-            <span className="accent-text theme-transition">right.</span>
-          </h1>
-          <p className="mt-5 max-w-xl font-body text-base leading-relaxed text-ink/70 sm:mt-6 sm:text-lg">
-            Which eSIM beats your carrier pack. How to carry zero-markup forex.
-            The cab app locals actually use. Honest, India-specific advice for
-            first-time international travellers — so you don&apos;t overpay or get
-            caught out.
-          </p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Link
-              href="/plan"
-              className="flex min-h-[44px] items-center rounded-pill bg-coral px-7 py-3 font-body text-base font-semibold text-white shadow-soft transition-transform duration-200 hover:scale-[1.03]"
-            >
-              Plan my trip
-            </Link>
-            <a
-              href="#destinations"
-              className="flex min-h-[44px] items-center rounded-pill border border-hairline bg-white px-7 py-3 font-body text-base font-semibold text-navy shadow-soft transition-transform duration-200 hover:scale-[1.03]"
-            >
-              Browse destinations
-            </a>
+      {/* Full-bleed photo with ken-burns + crossfade on change */}
+      <div className="absolute inset-0 -z-10 bg-navy">
+        <div key={activeSlug} className="absolute inset-0 animate-fade-in">
+          <div className="absolute inset-0 animate-ken-burns">
+            <Image
+              src={theme.heroImage || getTheme(destinations[0]?.slug).heroImage}
+              alt={active?.title ? `${active.title} — ${theme.mood}` : theme.mood}
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover"
+            />
           </div>
         </div>
+        {/* Top + bottom scrims for legibility */}
+        <div
+          aria-hidden
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(180deg, rgba(8,18,30,0.55) 0%, rgba(8,18,30,0) 22%, rgba(8,18,30,0) 48%, rgba(8,18,30,0.82) 100%)",
+          }}
+        />
+        {/* Subtle destination accent tint */}
+        <div
+          aria-hidden
+          className="theme-transition absolute inset-0 mix-blend-multiply"
+          style={{ backgroundColor: "var(--accent-deep)", opacity: 0.14 }}
+        />
+      </div>
 
-        {/* Interactive, themed checklist card */}
-        <div className="rounded-card border border-hairline bg-white/85 p-6 shadow-lift backdrop-blur-sm sm:p-8">
-          <div className="mb-5 flex flex-wrap gap-2">
+      <div className="mx-auto w-full max-w-6xl px-6 pb-10 pt-28 sm:pb-14">
+        {/* Current location chip */}
+        <span className="inline-flex items-center gap-1.5 rounded-pill bg-white/15 px-3 py-1 font-body text-xs font-medium uppercase tracking-wider text-white backdrop-blur-sm">
+          <MapPin className="h-3.5 w-3.5" aria-hidden />
+          {active?.title}, {active?.country}
+        </span>
+
+        <h1 className="mt-5 max-w-2xl font-display text-5xl font-semibold leading-[1.03] drop-shadow-sm sm:text-6xl lg:text-7xl">
+          Find your next destination.
+        </h1>
+        <p className="mt-4 max-w-xl font-body text-lg leading-relaxed text-white/85">
+          Pick a place, set your dates, and Routt plans the trip for you — visas,
+          money, connectivity, the lot. For every kind of traveller.
+        </p>
+
+        {/* Floating glass action panel — the signature element */}
+        <div className="mt-8 rounded-[20px] border border-white/40 bg-white/75 p-4 shadow-lift backdrop-blur-md sm:p-5">
+          <p className="mb-2 font-body text-xs font-semibold uppercase tracking-wider text-ink/55">
+            Where to?
+          </p>
+          <div className="-mx-1 mb-4 flex gap-2 overflow-x-auto px-1 pb-1">
             {destinations.map((d) => {
-              const isActive = d.slug === (selected ?? activeSlug);
+              const on = d.slug === selected;
               return (
                 <button
                   key={d.slug}
@@ -113,11 +101,11 @@ export default function HomeHero({ destinations }: { destinations: DestinationMe
                   onPointerLeave={() => setHovered(null)}
                   onFocus={() => setHovered(d.slug)}
                   onBlur={() => setHovered(null)}
-                  aria-pressed={isActive}
-                  className={`theme-transition flex min-h-[44px] items-center gap-2 rounded-pill border px-4 py-2 font-body text-sm font-medium ${
-                    isActive
+                  aria-pressed={on}
+                  className={`theme-transition flex min-h-[40px] shrink-0 items-center gap-1.5 rounded-pill border px-3.5 font-body text-sm font-medium ${
+                    on
                       ? "accent-bg accent-border text-white"
-                      : "border-hairline bg-fill/40 text-ink/70 hover:border-primary/40"
+                      : "border-hairline bg-white/70 text-ink/70 hover:border-primary/40"
                   }`}
                 >
                   <span aria-hidden>{d.flag}</span>
@@ -127,22 +115,27 @@ export default function HomeHero({ destinations }: { destinations: DestinationMe
             })}
           </div>
 
-          <div className="mb-1 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-            <h2 className="font-display text-xl font-semibold text-ink">
-              Your first {content.title} trip
-            </h2>
-            <Link
-              href={`/${content.slug}`}
-              className="inline-flex min-h-[44px] items-center font-body text-sm font-semibold accent-text hover:text-navy"
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <label className="flex min-h-[48px] flex-1 items-center gap-2 rounded-2xl border border-hairline bg-white px-4">
+              <Calendar className="h-5 w-5 shrink-0 text-ink/40" aria-hidden />
+              <span className="sr-only">Trip start date</span>
+              <input
+                type="date"
+                min={todayISO()}
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                className="w-full bg-transparent font-body text-base text-ink focus:outline-none"
+              />
+            </label>
+            <button
+              type="button"
+              onClick={plan}
+              className="flex min-h-[48px] items-center justify-center gap-2 rounded-pill bg-coral px-7 font-body text-base font-semibold text-white transition-transform duration-200 hover:scale-[1.02]"
             >
-              Full playbook →
-            </Link>
+              <Search className="h-5 w-5" aria-hidden />
+              Plan my trip
+            </button>
           </div>
-          <p className="mb-4 font-body text-sm text-ink/55">
-            Tick these off before you go.
-          </p>
-
-          <Checklist items={content.checklist} replayKey={content.slug} />
         </div>
       </div>
     </section>

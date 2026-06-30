@@ -21,6 +21,12 @@ export interface DestinationTheme {
   heroImage: string;
   /** Short, human description used for alt text + mood. */
   mood: string;
+  /** Evocative one-liner for image-led cards. */
+  blurb?: string;
+  /** Editorial pill shown on cards (e.g. "Popular"). Not a user review score. */
+  badge?: string;
+  /** Illustrative editorial rating for the card pill (placeholder, not reviews). */
+  rating?: number;
   credit?: { photographer: string; source: string; url: string };
 }
 
@@ -45,6 +51,9 @@ export const DESTINATION_THEMES: Record<string, DestinationTheme> = {
     scrim: "rgba(28, 18, 6, 0.55)",
     heroImage: unsplash("photo-1748029057835-be96754c6acf"),
     mood: "Desert dunes at golden hour near Dubai",
+    blurb: "Where the desert meets the skyline.",
+    badge: "Popular",
+    rating: 4.8,
     credit: { photographer: "Marek Piwnicki", source: "Unsplash", url: "https://unsplash.com/photos/golden-hour-illuminates-desert-dunes-and-mountains-kgJw1yur2Js" },
   },
   bangkok: {
@@ -54,6 +63,9 @@ export const DESTINATION_THEMES: Record<string, DestinationTheme> = {
     scrim: "rgba(30, 14, 8, 0.55)",
     heroImage: unsplash("photo-1762950297550-1d8d7cce12ae"),
     mood: "Wat Arun temple at sunset over the Bangkok skyline",
+    blurb: "Street food, temples, golden chaos.",
+    badge: "Trending",
+    rating: 4.7,
     credit: { photographer: "Haley Hong", source: "Unsplash", url: "https://unsplash.com/photos/wat-arun-temple-illuminated-at-sunset-with-colorful-sky-MKVGJ4d3E6c" },
   },
   singapore: {
@@ -63,6 +75,9 @@ export const DESTINATION_THEMES: Record<string, DestinationTheme> = {
     scrim: "rgba(6, 24, 30, 0.55)",
     heroImage: unsplash("photo-1760377964915-97c016103f44"),
     mood: "The modern Singapore skyline with Gardens by the Bay",
+    blurb: "Spotless, futuristic, effortless.",
+    badge: "Popular",
+    rating: 4.8,
     credit: { photographer: "Florian Delée", source: "Unsplash", url: "https://unsplash.com/photos/modern-singapore-skyline-with-gardens-by-the-bay-buY6GF0aUSY" },
   },
   bali: {
@@ -72,6 +87,9 @@ export const DESTINATION_THEMES: Record<string, DestinationTheme> = {
     scrim: "rgba(8, 26, 16, 0.55)",
     heroImage: unsplash("photo-1746106424334-a0f652d81cde"),
     mood: "Lush green rice terraces in Bali",
+    blurb: "Rice terraces, surf and slow mornings.",
+    badge: "Loved",
+    rating: 4.9,
     credit: { photographer: "Matthew Stephenson", source: "Unsplash", url: "https://unsplash.com/photos/rice-terraces-nestled-among-lush-tropical-greenery-FlQeHeTPClU" },
   },
   "abu-dhabi": {
@@ -81,6 +99,9 @@ export const DESTINATION_THEMES: Record<string, DestinationTheme> = {
     scrim: "rgba(24, 20, 10, 0.55)",
     heroImage: unsplash("photo-1741204472540-e213116cb3ef"),
     mood: "The Sheikh Zayed Grand Mosque in Abu Dhabi",
+    blurb: "Grand mosques and glassy calm.",
+    badge: "Editor's pick",
+    rating: 4.6,
     credit: { photographer: "Nick Fewings", source: "Unsplash", url: "https://unsplash.com/photos/the-sheikh-zayed-mosque-is-a-beautiful-landmark-UpfwRvJAsI4" },
   },
   "kuala-lumpur": {
@@ -90,6 +111,9 @@ export const DESTINATION_THEMES: Record<string, DestinationTheme> = {
     scrim: "rgba(6, 26, 24, 0.55)",
     heroImage: unsplash("photo-1764866557865-1f4e4060211f"),
     mood: "The Petronas Towers lit up over the Kuala Lumpur skyline",
+    blurb: "Towers, hawker stalls, easy visas.",
+    badge: "Underrated",
+    rating: 4.5,
     credit: { photographer: "Alim", source: "Unsplash", url: "https://unsplash.com/photos/twin-towers-illuminated-against-the-night-sky-TDZKKlsJwCk" },
   },
 };

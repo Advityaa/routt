@@ -45,11 +45,16 @@ const config: Config = {
           "0%": { opacity: "0" },
           "100%": { opacity: "1" },
         },
+        "ken-burns": {
+          "0%": { transform: "scale(1)" },
+          "100%": { transform: "scale(1.12)" },
+        },
       },
       animation: {
         "fade-rise": "fade-rise 0.5s ease both",
         "ambient": "ambient 12s ease-in-out infinite",
         "fade-in": "fade-in 0.45s ease both",
+        "ken-burns": "ken-burns 22s ease-out both",
       },
     },
   },
