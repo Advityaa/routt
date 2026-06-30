@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { getMdxComponents } from "@/components/mdx";
 import DestinationImage from "@/components/DestinationImage";
+import Experiences from "@/components/experiences/Experiences";
 import ThemeScope from "@/components/theme/ThemeScope";
 import { getDestination, getDestinationSlugs } from "@/lib/content";
 import { getTheme } from "@/lib/theme";
@@ -86,6 +87,10 @@ export default function DestinationPage({ params }: PageProps) {
           recommend. See our full disclosure in the footer.
         </p>
       </div>
+
+      {/* Things to do — commercial experiences handoff (separate from the
+          countdown's authoritative rules) */}
+      <Experiences city={dest.slug} cityName={dest.title} />
       </article>
     </ThemeScope>
   );

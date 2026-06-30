@@ -119,3 +119,22 @@ export function trackHandoffClick(params: {
     destination: params.destination,
   });
 }
+
+/**
+ * Outbound click on a bookable Experience (commercial handoff to a provider's
+ * booking page). Tracked like other affiliate handoffs so experience
+ * click-through is measurable alongside eSIM/forex.
+ */
+export function trackExperienceClick(params: {
+  provider: string;
+  city: string;
+  experienceId: string;
+  category: string;
+}): void {
+  track("experience_click", {
+    provider: params.provider,
+    destination: params.city,
+    experience_id: params.experienceId,
+    category: params.category,
+  });
+}

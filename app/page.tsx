@@ -5,6 +5,7 @@ import DestinationCard from "@/components/DestinationCard";
 import EmailCapture from "@/components/EmailCapture";
 import Reveal from "@/components/Reveal";
 import Icon, { type IconName } from "@/components/Icon";
+import CuratedExperiences from "@/components/experiences/CuratedExperiences";
 import { getAllDestinations } from "@/lib/content";
 import { getTheme } from "@/lib/theme";
 
@@ -136,6 +137,9 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* ── Curated experiences strip ────────────────────────── */}
+      <CuratedExperiences />
 
       {/* ── Photo-led CTA band ───────────────────────────────── */}
       <section className="px-6">
