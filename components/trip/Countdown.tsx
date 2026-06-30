@@ -13,6 +13,8 @@ import {
   type UrgencyState,
 } from "@/lib/countdown";
 import type { TripDestination, TripTask } from "@/lib/trip-types";
+import { getTheme, themeVars } from "@/lib/theme";
+import DestinationImage from "@/components/DestinationImage";
 import TaskItem from "./TaskItem";
 
 export default function Countdown({
@@ -75,9 +77,25 @@ export default function Countdown({
 
   const prog = progress(dest.tasks.length, done.length);
   const stale = isReviewStale(dest.lastReviewed);
+  const theme = getTheme(dest.slug);
 
   return (
-    <div className="mx-auto max-w-3xl px-6 py-10 sm:py-14">
+    <div style={themeVars(theme)} className="mx-auto max-w-3xl px-6 py-10 sm:py-14">
+      {/* Slim themed banner — the only place the tool wears the destination's
+          colours. Everything below stays the standard, calm system. */}
+      <div className="relative mb-5 flex h-24 items-end overflow-hidden rounded-card sm:h-28">
+        <DestinationImage
+          src={theme.heroImage}
+          alt={theme.mood}
+          sizes="(max-width: 768px) 100vw, 768px"
+          priority
+          className="absolute inset-0 -z-10 h-full w-full"
+        />
+        <p className="px-5 pb-3 font-body text-sm font-semibold uppercase tracking-wider text-white/90 drop-shadow">
+          {dest.flag} Your {dest.title} countdown
+        </p>
+      </div>
+
       {/* Header */}
       <div className="rounded-card border border-hairline bg-white p-6 shadow-soft sm:p-8">
         <div className="flex flex-wrap items-start justify-between gap-3">
@@ -122,7 +140,7 @@ export default function Countdown({
           </div>
           <div className="mt-2 h-2.5 w-full overflow-hidden rounded-pill bg-fill">
             <div
-              className="h-full rounded-pill bg-primary transition-all duration-500"
+              className="accent-bg h-full rounded-pill transition-all duration-500"
               style={{ width: `${prog.percent}%` }}
             />
           </div>

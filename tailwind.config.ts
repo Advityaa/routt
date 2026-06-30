@@ -41,10 +41,15 @@ const config: Config = {
           "0%, 100%": { opacity: "0.5", transform: "scale(1)" },
           "50%": { opacity: "0.75", transform: "scale(1.05)" },
         },
+        "fade-in": {
+          "0%": { opacity: "0" },
+          "100%": { opacity: "1" },
+        },
       },
       animation: {
         "fade-rise": "fade-rise 0.5s ease both",
         "ambient": "ambient 12s ease-in-out infinite",
+        "fade-in": "fade-in 0.45s ease both",
       },
     },
   },

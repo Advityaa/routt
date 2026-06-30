@@ -26,6 +26,8 @@ export interface GuideFrontmatter {
   lastUpdated: string; // YYYY-MM-DD
   author: string;
   relatedSlugs?: string[];
+  /** Optional destination slug to theme this post (accent + hero photo). */
+  themeSlug?: string;
   /** Short teaser for cards / related blocks. */
   summary?: string;
   /** Optional Q&A — drives the FAQPage schema + a visible FAQ block. */

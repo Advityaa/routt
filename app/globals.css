@@ -3,6 +3,14 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    /* Destination theming — the reusable accent layer. Overridden per scope
+       by ThemeScope / the home hero; defaults to Routt blue (always valid). */
+    --accent: #1e6fb8;
+    --accent-deep: #13548f;
+    --scrim: rgba(10, 24, 40, 0.55);
+  }
+
   html {
     scroll-behavior: smooth;
   }
@@ -32,6 +40,30 @@
 }
 
 @layer components {
+  /* Destination accent helpers — any component using these re-themes for free. */
+  .accent-text {
+    color: var(--accent);
+  }
+  .accent-bg {
+    background-color: var(--accent);
+  }
+  .accent-border {
+    border-color: var(--accent);
+  }
+  /* Smoothly animate accent-driven properties when the theme changes. */
+  .theme-transition {
+    transition: background-color 0.4s ease, border-color 0.4s ease,
+      color 0.4s ease, opacity 0.45s ease;
+  }
+  /* Bottom scrim for text over hero photos. */
+  .scrim-overlay {
+    background: linear-gradient(
+      180deg,
+      transparent 30%,
+      var(--scrim) 100%
+    );
+  }
+
   /* The single glass surface in the whole product: the sticky nav. */
   .nav-glass {
     background-color: rgba(250, 252, 254, 0.72);

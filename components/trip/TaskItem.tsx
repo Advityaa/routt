@@ -13,6 +13,7 @@ import {
   type UrgencyState,
 } from "@/lib/countdown";
 import type { FactRanges, TripTask } from "@/lib/trip-types";
+import Icon, { categoryIcon } from "@/components/Icon";
 import ForexCalculator from "./ForexCalculator";
 
 const BADGE: Record<UrgencyState, string> = {
@@ -64,6 +65,7 @@ export default function TaskItem({
 
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+            <Icon name={categoryIcon(task.category)} className="h-4 w-4 accent-text" />
             <span
               className={`rounded-pill border px-2.5 py-0.5 font-body text-xs font-semibold ${BADGE[state]}`}
             >

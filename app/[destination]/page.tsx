@@ -3,7 +3,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { getMdxComponents } from "@/components/mdx";
+import DestinationImage from "@/components/DestinationImage";
+import ThemeScope from "@/components/theme/ThemeScope";
 import { getDestination, getDestinationSlugs } from "@/lib/content";
+import { getTheme } from "@/lib/theme";
 
 interface PageProps {
   params: { destination: string };
@@ -26,40 +29,49 @@ export function generateMetadata({ params }: PageProps): Metadata {
 export default function DestinationPage({ params }: PageProps) {
   const dest = getDestination(params.destination);
   if (!dest) notFound();
+  const theme = getTheme(dest.slug);
 
   return (
-    <article>
-      {/* Playbook header */}
-      <header className="border-b border-hairline bg-white">
-        <div className="mx-auto max-w-3xl px-6 py-10 sm:py-12">
-          <Link
-            href="/#destinations"
-            className="inline-flex min-h-[44px] items-center font-body text-sm font-medium text-primary hover:text-navy"
-          >
-            ← All destinations
-          </Link>
-          <div className="mt-4 flex items-center gap-3 sm:mt-6">
-            <span className="text-4xl" aria-hidden>
-              {dest.flag}
-            </span>
-            <span className="font-body text-sm font-medium uppercase tracking-wider text-primary/70">
-              {dest.country}
-            </span>
+    <ThemeScope slug={dest.slug}>
+      <article>
+        {/* Themed, treated hero with title overlay */}
+        <header className="relative isolate flex min-h-[20rem] flex-col justify-end overflow-hidden sm:min-h-[24rem]">
+          <DestinationImage
+            src={theme.heroImage}
+            alt={theme.mood}
+            sizes="100vw"
+            priority
+            className="absolute inset-0 -z-10 h-full w-full"
+          />
+          <div className="mx-auto w-full max-w-3xl px-6 pb-8 pt-24">
+            <Link
+              href="/#destinations"
+              className="inline-flex min-h-[44px] items-center font-body text-sm font-medium text-white/85 hover:text-white"
+            >
+              ← All destinations
+            </Link>
+            <div className="mt-2 flex items-center gap-3">
+              <span className="text-3xl" aria-hidden>
+                {dest.flag}
+              </span>
+              <span className="font-body text-sm font-medium uppercase tracking-wider text-white/80">
+                {dest.country}
+              </span>
+            </div>
+            <h1 className="mt-3 font-display text-4xl font-semibold leading-tight text-white drop-shadow sm:text-5xl">
+              {dest.title}
+            </h1>
+            <p className="mt-3 max-w-2xl font-body text-base leading-relaxed text-white/85 sm:text-lg">
+              {dest.summary}
+            </p>
+            <Link
+              href={`/plan?dest=${dest.slug}`}
+              className="mt-5 inline-flex min-h-[48px] items-center rounded-pill bg-coral px-7 font-body text-base font-semibold text-white shadow-soft transition-transform duration-200 hover:scale-[1.03]"
+            >
+              Plan my {dest.title} trip →
+            </Link>
           </div>
-          <h1 className="mt-4 font-display text-4xl font-semibold leading-tight text-ink sm:text-5xl">
-            {dest.title}
-          </h1>
-          <p className="mt-4 font-body text-base leading-relaxed text-ink/65 sm:text-lg">
-            {dest.summary}
-          </p>
-          <Link
-            href={`/plan?dest=${dest.slug}`}
-            className="mt-6 inline-flex min-h-[48px] items-center rounded-pill bg-coral px-7 font-body text-base font-semibold text-white shadow-soft transition-transform duration-200 hover:scale-[1.03]"
-          >
-            Plan my {dest.title} trip →
-          </Link>
-        </div>
-      </header>
+        </header>
 
       {/* Playbook body */}
       <div className="mx-auto max-w-3xl px-6 py-12">
@@ -74,6 +86,7 @@ export default function DestinationPage({ params }: PageProps) {
           recommend. See our full disclosure in the footer.
         </p>
       </div>
-    </article>
+      </article>
+    </ThemeScope>
   );
 }
