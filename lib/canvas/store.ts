@@ -33,7 +33,7 @@ export interface CanvasData {
 
 const EMPTY: CanvasData = {
   name: "",
-  theme: "✈️", // playful avatar (identity only)
+  theme: "plane", // playful avatar key (identity only)
   trips: [],
   activeTripId: null,
   visited: [],

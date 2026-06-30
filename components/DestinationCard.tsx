@@ -53,7 +53,7 @@ export default function DestinationCard({ dest }: { dest: DestinationMeta }) {
       {/* Overlaid title block */}
       <div className="relative p-5">
         <span className="font-body text-xs font-medium uppercase tracking-wider text-white/75">
-          {dest.flag} {dest.country}
+          {dest.country}
         </span>
         <h3 className="mt-1 font-display text-2xl font-semibold leading-tight text-white drop-shadow">
           {dest.title}

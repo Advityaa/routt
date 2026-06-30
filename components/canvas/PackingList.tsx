@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Backpack, Check, CloudSun, Luggage, Minus, Plus, Ticket, X } from "lucide-react";
 import { ACTIVITIES } from "@/lib/packing/data";
 import { generatePacking } from "@/lib/packing/generate";
@@ -31,8 +31,8 @@ interface Persisted {
 /**
  * Smart packing list — reusable, fed by {tripId, destination, cityName, lat,
  * lng, startDate}. Fetches weather server-side (via /api/weather), then builds
- * a personalised, reasoned list. Selections + checked + custom items persist
- * (localStorage, non-sensitive).
+ * a personalised, reasoned list. Dark canvas styling. Selections + checked +
+ * custom items persist (localStorage, non-sensitive).
  */
 export default function PackingList({
   tripId,
@@ -59,7 +59,6 @@ export default function PackingList({
   const [weather, setWeather] = useState<WeatherSummary | null>(null);
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
 
-  // Load persisted state once.
   useEffect(() => {
     setMounted(true);
     try {
@@ -77,7 +76,6 @@ export default function PackingList({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [KEY]);
 
-  // Persist on change.
   useEffect(() => {
     if (!mounted) return;
     try {
@@ -89,7 +87,6 @@ export default function PackingList({
 
   const endDate = addDays(startDate, Math.max(0, tripDays - 1));
 
-  // Fetch weather server-side; never blocks UI (skeleton while loading).
   useEffect(() => {
     const ctrl = new AbortController();
     setStatus("loading");
@@ -136,51 +133,52 @@ export default function PackingList({
     <div>
       {/* Weather summary header */}
       {status === "loading" ? (
-        <div className="h-12 w-full animate-pulse rounded-xl bg-fill" />
+        <div className="h-12 w-full animate-pulse rounded-xl bg-white/10" />
       ) : status === "ready" && weather ? (
-        <div className="rounded-xl border border-hairline bg-fill/40 px-4 py-3">
+        <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-3">
           <div className="flex flex-wrap items-center gap-2">
-            <CloudSun className="h-4 w-4 text-primary" aria-hidden />
-            <span className="font-body text-sm font-semibold text-ink">
+            <CloudSun className="h-4 w-4 text-skyaccent" aria-hidden />
+            <span className="font-body text-sm font-semibold text-white">
               {cityName}, {rangeLabel(startDate, endDate)}
             </span>
-            <span className="rounded-pill border border-primary/30 bg-white px-2 py-0.5 font-body text-[11px] font-semibold uppercase tracking-wide text-primary">
+            <span className="rounded-pill border border-skyaccent/40 bg-skyaccent/15 px-2 py-0.5 font-body text-[11px] font-semibold uppercase tracking-wide text-skyaccent">
               {weather.mode === "forecast" ? "Forecast" : "Typical for this time of year"}
             </span>
           </div>
-          <p className="mt-1 font-body text-sm text-ink/65">{weather.summaryText}</p>
+          <p className="mt-1 font-body text-sm text-canvasmuted">{weather.summaryText}</p>
         </div>
       ) : (
-        <div className="rounded-xl border border-hairline bg-fill/30 px-4 py-3 font-body text-sm text-ink/55">
+        <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 font-body text-sm text-canvasmuted">
           Weather couldn&apos;t load right now — your activity &amp; essentials list is still ready below.
         </div>
       )}
 
-      {/* Trip length + activities */}
+      {/* Trip length */}
       <div className="mt-4 flex flex-wrap items-center gap-3">
-        <div className="flex items-center gap-2 rounded-pill border border-hairline bg-white px-2 py-1">
+        <div className="flex items-center gap-2 rounded-pill border border-white/15 bg-white/5 px-2 py-1">
           <button
             type="button"
             aria-label="Fewer days"
             onClick={() => setTripDays((d) => Math.max(1, d - 1))}
-            className="flex h-8 w-8 items-center justify-center rounded-full text-ink/60 hover:bg-fill"
+            className="flex h-8 w-8 items-center justify-center rounded-full text-white/70 hover:bg-white/10"
           >
             <Minus className="h-4 w-4" aria-hidden />
           </button>
-          <span className="min-w-[5.5rem] text-center font-body text-sm font-semibold text-ink">
+          <span className="min-w-[5.5rem] text-center font-body text-sm font-semibold text-white">
             {tripDays} {tripDays === 1 ? "day" : "days"}
           </span>
           <button
             type="button"
             aria-label="More days"
             onClick={() => setTripDays((d) => Math.min(21, d + 1))}
-            className="flex h-8 w-8 items-center justify-center rounded-full text-ink/60 hover:bg-fill"
+            className="flex h-8 w-8 items-center justify-center rounded-full text-white/70 hover:bg-white/10"
           >
             <Plus className="h-4 w-4" aria-hidden />
           </button>
         </div>
       </div>
 
+      {/* Activities */}
       <div className="mt-3 flex flex-wrap gap-2">
         {ACTIVITIES.map((a) => {
           const on = activities.includes(a.key);
@@ -191,7 +189,7 @@ export default function PackingList({
               onClick={() => toggleActivity(a.key)}
               aria-pressed={on}
               className={`inline-flex min-h-[36px] items-center gap-1.5 rounded-pill border px-3 font-body text-sm transition-colors ${
-                on ? "border-primary bg-primary text-white" : "border-hairline bg-white text-ink/70 hover:border-primary/40"
+                on ? "border-skyaccent bg-skyaccent text-canvasbg" : "border-white/15 bg-white/5 text-white/75 hover:border-skyaccent/50"
               }`}
             >
               {on ? <Check className="h-3.5 w-3.5" aria-hidden /> : null}
@@ -204,12 +202,12 @@ export default function PackingList({
       {/* Progress */}
       <div className="mt-5">
         <div className="flex items-center justify-between font-body text-sm">
-          <span className="font-semibold text-ink">{doneCount} of {total} packed</span>
-          <span className="text-ink/50">{total ? Math.round((doneCount / total) * 100) : 0}%</span>
+          <span className="font-semibold text-white">{doneCount} of {total} packed</span>
+          <span className="text-canvasmuted">{total ? Math.round((doneCount / total) * 100) : 0}%</span>
         </div>
-        <div className="mt-2 h-2 w-full overflow-hidden rounded-pill bg-fill">
+        <div className="mt-2 h-2 w-full overflow-hidden rounded-pill bg-white/10">
           <div
-            className="accent-bg h-full rounded-pill bg-primary transition-all duration-500"
+            className="h-full rounded-pill bg-gradient-to-r from-primary to-skyaccent transition-all duration-500"
             style={{ width: `${total ? (doneCount / total) * 100 : 0}%` }}
           />
         </div>
@@ -217,10 +215,10 @@ export default function PackingList({
 
       {/* Groups */}
       <div className="mt-5 space-y-6">
-        <Group title="Weather-based" icon={<CloudSun className="h-4 w-4" />} items={result.weather} checked={checked} onToggle={toggleChecked} />
-        <Group title="For your activities" icon={<Ticket className="h-4 w-4" />} items={result.activity} checked={checked} onToggle={toggleChecked} emptyHint="Pick activities above to tailor this." />
-        <Group title="Essentials" icon={<Luggage className="h-4 w-4" />} items={result.essentials} checked={checked} onToggle={toggleChecked} />
-        <Group title="Your items" icon={<Backpack className="h-4 w-4" />} items={custom} checked={checked} onToggle={toggleChecked} onRemove={(id) => setCustom((p) => p.filter((i) => i.id !== id))} />
+        <Group title="Weather-based" icon={<CloudSun className="h-4 w-4 text-skyaccent" />} items={result.weather} checked={checked} onToggle={toggleChecked} />
+        <Group title="For your activities" icon={<Ticket className="h-4 w-4 text-skyaccent" />} items={result.activity} checked={checked} onToggle={toggleChecked} emptyHint="Pick activities above to tailor this." />
+        <Group title="Essentials" icon={<Luggage className="h-4 w-4 text-skyaccent" />} items={result.essentials} checked={checked} onToggle={toggleChecked} />
+        <Group title="Your items" icon={<Backpack className="h-4 w-4 text-skyaccent" />} items={custom} checked={checked} onToggle={toggleChecked} onRemove={(id) => setCustom((p) => p.filter((i) => i.id !== id))} />
       </div>
 
       {/* Add custom */}
@@ -231,12 +229,12 @@ export default function PackingList({
           onKeyDown={(e) => e.key === "Enter" && addCustom()}
           placeholder="Add your own item…"
           aria-label="Add a custom packing item"
-          className="min-h-[44px] flex-1 rounded-2xl border border-hairline bg-white px-4 font-body text-base text-ink focus:border-primary focus:outline-none"
+          className="min-h-[44px] flex-1 rounded-2xl border border-white/15 bg-white/5 px-4 font-body text-base text-white placeholder:text-white/40 focus:border-skyaccent focus:outline-none"
         />
         <button
           type="button"
           onClick={addCustom}
-          className="flex min-h-[44px] items-center gap-1.5 rounded-pill bg-navy px-5 font-body text-sm font-semibold text-white hover:scale-[1.02]"
+          className="flex min-h-[44px] items-center gap-1.5 rounded-pill bg-skyaccent px-5 font-body text-sm font-semibold text-canvasbg hover:scale-[1.02]"
         >
           <Plus className="h-4 w-4" aria-hidden /> Add
         </button>
@@ -265,35 +263,35 @@ function Group({
   if (items.length === 0 && !emptyHint) return null;
   return (
     <div>
-      <p className="flex items-center gap-1.5 font-body text-xs font-semibold uppercase tracking-wider text-primary/70">
+      <p className="flex items-center gap-1.5 canvas-label">
         {icon}
         {title}
       </p>
       {items.length === 0 ? (
-        <p className="mt-2 font-body text-sm text-ink/45">{emptyHint}</p>
+        <p className="mt-2 font-body text-sm text-white/40">{emptyHint}</p>
       ) : (
         <ul className="mt-2 space-y-2">
           {items.map((item) => {
             const on = checked.includes(item.id);
             return (
-              <li key={item.id} className="flex items-start gap-3 rounded-2xl border border-hairline bg-white px-3 py-2.5">
+              <li key={item.id} className="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/5 px-3 py-2.5">
                 <button
                   type="button"
                   onClick={() => onToggle(item.id)}
                   aria-pressed={on}
                   aria-label={on ? `Unpack ${item.label}` : `Pack ${item.label}`}
                   className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border transition-colors ${
-                    on ? "border-primary bg-primary text-white" : "border-hairline bg-fill/50 text-transparent"
+                    on ? "border-skyaccent bg-skyaccent text-canvasbg" : "border-white/20 bg-white/5 text-transparent"
                   }`}
                 >
                   <Check className="h-3.5 w-3.5" aria-hidden />
                 </button>
                 <span className="min-w-0 flex-1">
-                  <span className={`font-body text-sm font-medium ${on ? "text-ink/40 line-through" : "text-ink"}`}>
+                  <span className={`font-body text-sm font-medium ${on ? "text-white/40 line-through" : "text-white"}`}>
                     {item.label}
                   </span>
                   {item.reason ? (
-                    <span className="mt-0.5 block font-body text-xs leading-snug text-ink/55">{item.reason}</span>
+                    <span className="mt-0.5 block font-body text-xs leading-snug text-canvasmuted">{item.reason}</span>
                   ) : null}
                 </span>
                 {onRemove ? (
@@ -301,7 +299,7 @@ function Group({
                     type="button"
                     onClick={() => onRemove(item.id)}
                     aria-label={`Remove ${item.label}`}
-                    className="shrink-0 text-ink/30 hover:text-coral"
+                    className="shrink-0 text-white/30 hover:text-coral"
                   >
                     <X className="h-4 w-4" aria-hidden />
                   </button>

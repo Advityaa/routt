@@ -33,7 +33,7 @@ export default function EmailCapture() {
 
       {submitted ? (
         <p className="mx-auto mt-8 max-w-md rounded-card bg-white/10 px-5 py-4 font-body text-base text-white">
-          You&apos;re on the list. We&apos;ll be in touch before your next trip. ✈️
+          You&apos;re on the list. We&apos;ll be in touch before your next trip.
         </p>
       ) : (
         <form

@@ -64,6 +64,31 @@
     );
   }
 
+  /* Living Canvas surfaces — frosted white-on-dark tiles. */
+  .canvas-tile {
+    border-radius: 22px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(10px);
+  }
+  .canvas-label {
+    font-family: theme("fontFamily.body");
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: theme("colors.canvasmuted");
+  }
+  .canvas-badge {
+    font-family: theme("fontFamily.body");
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 4px 9px;
+    border-radius: 7px;
+    background: rgba(126, 200, 255, 0.18);
+    color: theme("colors.skyaccent");
+  }
+
   /* The single glass surface in the whole product: the sticky nav. */
   .nav-glass {
     background-color: rgba(250, 252, 254, 0.72);

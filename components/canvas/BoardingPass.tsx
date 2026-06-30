@@ -2,7 +2,6 @@
 
 import { Plane } from "lucide-react";
 import { countdownHeadline, daysUntilTrip, progress } from "@/lib/countdown";
-import { getTheme, themeVars } from "@/lib/theme";
 import type { CanvasTrip } from "@/lib/canvas/store";
 
 /**
@@ -23,7 +22,6 @@ export default function BoardingPass({
   issuing?: boolean;
   onOpen?: () => void;
 }) {
-  const theme = getTheme(trip.destination);
   const days = daysUntilTrip(trip.tripDate);
   const prog = progress(totalTasks || 0, trip.done.length);
   const code = trip.destination.slice(0, 3).toUpperCase();
@@ -33,15 +31,14 @@ export default function BoardingPass({
     <button
       type="button"
       onClick={onOpen}
-      style={themeVars(theme)}
       className={`group block w-full overflow-hidden rounded-card text-left shadow-lift transition-transform duration-200 hover:-translate-y-1 ${
         issuing ? "animate-issue-pass" : ""
       }`}
     >
-      {/* Header band — themed */}
+      {/* Header band — Routt blue (brand) */}
       <div
         className="relative px-6 py-4"
-        style={{ background: "linear-gradient(120deg, var(--accent-deep), var(--accent))" }}
+        style={{ background: "linear-gradient(120deg, #13548F, #1E6FB8)" }}
       >
         <div className="flex items-center justify-between text-white">
           <span className="font-body text-xs font-semibold uppercase tracking-[0.2em] text-white/80">
@@ -74,7 +71,7 @@ export default function BoardingPass({
           <p className="font-body text-[11px] font-medium uppercase tracking-wider text-ink/45">
             Countdown
           </p>
-          <p className="mt-0.5 font-body text-sm font-semibold accent-text">
+          <p className="mt-0.5 font-body text-sm font-semibold text-primary">
             {countdownHeadline(days)}
           </p>
         </div>
@@ -89,7 +86,7 @@ export default function BoardingPass({
         <div className="col-span-3">
           <div className="h-2 w-full overflow-hidden rounded-pill bg-fill">
             <div
-              className="accent-bg h-full rounded-pill transition-all duration-500"
+              className="h-full rounded-pill bg-primary transition-all duration-500"
               style={{ width: `${prog.percent}%` }}
             />
           </div>

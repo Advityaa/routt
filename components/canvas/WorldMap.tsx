@@ -53,18 +53,18 @@ export default function WorldMap({
   };
 
   return (
-    <div className="overflow-hidden rounded-card border border-hairline bg-white shadow-soft">
+    <div className="canvas-tile overflow-hidden">
       {/* Shareable card surface */}
-      <div className="bg-gradient-to-b from-fill/50 to-white px-6 pt-6">
+      <div className="px-6 pt-6">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <p className="inline-flex items-center gap-1.5 font-body text-xs font-semibold uppercase tracking-wider text-primary/70">
-              <Globe2 className="h-4 w-4" aria-hidden /> World explored
+            <p className="inline-flex items-center gap-1.5 canvas-label">
+              <Globe2 className="h-4 w-4 text-skyaccent" aria-hidden /> World explored
             </p>
-            <p className="mt-1 font-display text-4xl font-semibold text-ink sm:text-5xl">
+            <p className="mt-1 font-display text-4xl font-semibold text-white sm:text-5xl">
               {Math.round(percent)}%
             </p>
-            <p className="font-body text-sm text-ink/60">
+            <p className="font-body text-sm text-canvasmuted">
               {visited.length} of {TOTAL_COUNTRIES} countries · {continents}{" "}
               {continents === 1 ? "continent" : "continents"}
             </p>
@@ -72,7 +72,7 @@ export default function WorldMap({
           <button
             type="button"
             onClick={share}
-            className="inline-flex min-h-[40px] items-center gap-1.5 rounded-pill border border-hairline bg-white px-4 font-body text-sm font-semibold text-navy transition-colors hover:bg-fill/50"
+            className="inline-flex min-h-[40px] items-center gap-1.5 rounded-pill border border-white/15 bg-white/5 px-4 font-body text-sm font-semibold text-white transition-colors hover:bg-white/10"
           >
             <Share2 className="h-4 w-4" aria-hidden />
             {shared ? "Copied!" : "Share"}
@@ -86,9 +86,9 @@ export default function WorldMap({
           role="img"
           aria-label={`World map with ${visited.length} countries marked as visited`}
         >
-          <rect x="0" y="0" width="360" height="180" rx="10" fill="#F0F6FC" />
+          <rect x="0" y="0" width="360" height="180" rx="10" fill="rgba(255,255,255,0.03)" />
           {CONTINENT_BLOBS.map((b, i) => (
-            <ellipse key={i} cx={b.cx} cy={b.cy} rx={b.rx} ry={b.ry} fill="#DEEBF7" />
+            <ellipse key={i} cx={b.cx} cy={b.cy} rx={b.rx} ry={b.ry} fill="rgba(255,255,255,0.07)" />
           ))}
           {COUNTRIES.map((c) => {
             const { x, y } = project(c.lat, c.lng);
@@ -99,7 +99,7 @@ export default function WorldMap({
                 cx={x}
                 cy={y}
                 r={on ? 2.8 : 1.6}
-                fill={on ? "#1E6FB8" : "#9FBBD8"}
+                fill={on ? "#7EC8FF" : "rgba(255,255,255,0.22)"}
                 className="cursor-pointer transition-all duration-300"
                 onClick={() => onToggle(c.code)}
               >
@@ -113,13 +113,13 @@ export default function WorldMap({
       {/* Suggestions */}
       {suggestions.length ? (
         <div className="flex flex-wrap items-center gap-2 px-6 pt-5">
-          <span className="font-body text-xs font-medium text-ink/50">Next?</span>
+          <span className="font-body text-xs font-medium text-canvasmuted">Next?</span>
           {suggestions.map((c) => (
             <button
               key={c.code}
               type="button"
               onClick={() => onToggle(c.code)}
-              className="rounded-pill border border-hairline bg-fill/40 px-3 py-1 font-body text-xs font-medium text-navy hover:border-primary/40"
+              className="rounded-pill border border-white/15 bg-white/5 px-3 py-1 font-body text-xs font-medium text-white hover:border-skyaccent/50"
             >
               + {c.name}
             </button>
@@ -129,14 +129,14 @@ export default function WorldMap({
 
       {/* Searchable country picker */}
       <div className="px-6 py-5">
-        <label className="flex min-h-[44px] items-center gap-2 rounded-2xl border border-hairline bg-white px-4">
-          <Search className="h-4 w-4 shrink-0 text-ink/40" aria-hidden />
+        <label className="flex min-h-[44px] items-center gap-2 rounded-2xl border border-white/15 bg-white/5 px-4">
+          <Search className="h-4 w-4 shrink-0 text-canvasmuted" aria-hidden />
           <span className="sr-only">Search countries you&apos;ve visited</span>
           <input
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="Mark countries you've visited…"
-            className="w-full bg-transparent py-2 font-body text-base text-ink focus:outline-none"
+            className="w-full bg-transparent py-2 font-body text-base text-white placeholder:text-white/40 focus:outline-none"
           />
         </label>
         <div className="mt-3 flex max-h-56 flex-wrap gap-2 overflow-y-auto">
@@ -150,8 +150,8 @@ export default function WorldMap({
                 aria-pressed={on}
                 className={`inline-flex min-h-[36px] items-center gap-1.5 rounded-pill border px-3 font-body text-sm transition-colors ${
                   on
-                    ? "border-primary bg-primary text-white"
-                    : "border-hairline bg-white text-ink/70 hover:border-primary/40"
+                    ? "border-skyaccent bg-skyaccent text-canvasbg"
+                    : "border-white/15 bg-white/5 text-white/75 hover:border-skyaccent/50"
                 }`}
               >
                 {on ? <Check className="h-3.5 w-3.5" aria-hidden /> : null}

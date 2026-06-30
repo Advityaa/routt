@@ -53,9 +53,6 @@ export default function DestinationPage({ params }: PageProps) {
               ← All destinations
             </Link>
             <div className="mt-2 flex items-center gap-3">
-              <span className="text-3xl" aria-hidden>
-                {dest.flag}
-              </span>
               <span className="font-body text-sm font-medium uppercase tracking-wider text-white/80">
                 {dest.country}
               </span>

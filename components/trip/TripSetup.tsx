@@ -63,7 +63,7 @@ export default function TripSetup({
 
       {requestedComingSoon ? (
         <p className="mt-4 rounded-card border border-hairline bg-fill/40 px-4 py-3 font-body text-sm text-navy">
-          {requestedComingSoon.flag} {requestedComingSoon.title} is coming soon —
+          {requestedComingSoon.title} is coming soon —
           Dubai is the only fully-verified plan right now.
         </p>
       ) : null}
@@ -72,7 +72,7 @@ export default function TripSetup({
         <div>
           <span className="font-body text-sm font-semibold text-ink">Passport</span>
           <div className="mt-2 flex min-h-[44px] items-center gap-2 rounded-2xl border border-hairline bg-fill/40 px-4 font-body text-base text-ink/70">
-            <span aria-hidden>🇮🇳</span> India
+            India
             <span className="ml-auto font-body text-xs text-ink/40">more soon</span>
           </div>
         </div>
@@ -92,7 +92,7 @@ export default function TripSetup({
             </option>
             {catalogue.map((d) => (
               <option key={d.slug} value={d.slug} disabled={!d.live}>
-                {d.flag} {d.title}
+                {d.title}
                 {d.live ? "" : " — coming soon"}
               </option>
             ))}

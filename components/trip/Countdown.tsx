@@ -92,7 +92,7 @@ export default function Countdown({
           className="absolute inset-0 -z-10 h-full w-full"
         />
         <p className="px-5 pb-3 font-body text-sm font-semibold uppercase tracking-wider text-white/90 drop-shadow">
-          {dest.flag} Your {dest.title} countdown
+          Your {dest.title} countdown
         </p>
       </div>
 
@@ -101,9 +101,6 @@ export default function Countdown({
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-3xl" aria-hidden>
-                {dest.flag}
-              </span>
               <span className="font-body text-sm font-medium uppercase tracking-wider text-primary/70">
                 {dest.country}
               </span>

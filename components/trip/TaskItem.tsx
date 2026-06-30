@@ -1,5 +1,6 @@
 "use client";
 
+import { Check } from "lucide-react";
 import {
   getPartner,
   trackAffiliateClick,
@@ -59,7 +60,7 @@ export default function TaskItem({
                 : "border-hairline bg-fill/50 text-transparent hover:border-primary/50"
             }`}
           >
-            ✓
+            <Check className="h-4 w-4" />
           </span>
         </button>
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Check } from "lucide-react";
 
 interface ChecklistProps {
   items: string[];
@@ -57,7 +58,7 @@ export default function Checklist({ items, replayKey, title }: ChecklistProps) {
                       : "border-hairline bg-fill/50 text-transparent"
                   }`}
                 >
-                  ✓
+                  <Check className="h-3.5 w-3.5" />
                 </span>
                 <span
                   className={`font-body text-sm transition-colors ${

@@ -3,17 +3,16 @@
 import { useId, useState } from "react";
 import AffiliateButton from "@/components/AffiliateButton";
 import type { PartnerId } from "@/lib/affiliate";
+import { computeForex, inr, round50 } from "@/lib/forex";
 
 /**
  * Forex savings estimator. A transparent calculation on the user's OWN inputs:
  * roughly how much a zero-markup forex card saves vs a normal Indian card.
+ * Shares its math with the Canvas savings tile via lib/forex.
  *
  * Honesty rules: every assumption is visible + editable (no hidden magic
  * number), and it's framed as an estimate — never a specific bank's exact fee.
  */
-
-const round50 = (n: number) => Math.round(n / 50) * 50;
-const inr = (n: number) => `₹${Math.round(n).toLocaleString("en-IN")}`;
 
 function numFromInput(v: string): number {
   const n = Number(v);
@@ -38,12 +37,14 @@ export default function ForexCalculator({
   const [atmFlatZero, setAtmFlatZero] = useState(150);
 
   // Live math — recomputed every render, no effects, no reload.
-  const spendMarkup = spend * (markupPct / 100) * (1 + gstPct / 100);
-  const atmMarkup = atm * (markupPct / 100);
-  const normalAtm = atmMarkup + atmFlatNormal;
-  const normalTotal = spendMarkup + normalAtm;
-  const zeroTotal = atmFlatZero;
-  const savings = Math.max(0, normalTotal - zeroTotal);
+  const { spendMarkup, normalAtm, normalTotal, zeroTotal, savings } = computeForex({
+    spend,
+    atm,
+    markupPct,
+    gstPct,
+    atmFlatNormal,
+    atmFlatZero,
+  });
 
   const uid = useId();
 

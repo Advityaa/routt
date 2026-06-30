@@ -17,6 +17,10 @@ const config: Config = {
         bg: "#FAFCFE",
         ink: "#152A3E",
         coral: "#F0633C",
+        // Living Canvas (dark surface) palette — accent stays in the blue family.
+        canvasbg: "#0A141D",
+        skyaccent: "#7EC8FF",
+        canvasmuted: "#8AA0B4",
       },
       fontFamily: {
         display: ["var(--font-fraunces)", "Georgia", "serif"],

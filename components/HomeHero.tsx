@@ -108,7 +108,6 @@ export default function HomeHero({ destinations }: { destinations: DestinationMe
                       : "border-hairline bg-white/70 text-ink/70 hover:border-primary/40"
                   }`}
                 >
-                  <span aria-hidden>{d.flag}</span>
                   {d.title}
                 </button>
               );
