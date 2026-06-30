@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { MapPin, Calendar, Plus, Sparkles, Ticket } from "lucide-react";
+import { Backpack, MapPin, Calendar, Plus, Sparkles, Ticket } from "lucide-react";
 import DestinationImage from "@/components/DestinationImage";
 import TaskItem from "@/components/trip/TaskItem";
 import ForexCalculator from "@/components/trip/ForexCalculator";
 import GetYourGuideWidget from "@/components/experiences/GetYourGuideWidget";
+import PackingList from "@/components/canvas/PackingList";
 import { gygLocationId } from "@/lib/experiences/widgets";
+import { cityCoords } from "@/lib/packing/data";
 import {
   daysUntilTrip,
   taskState,
@@ -254,6 +256,7 @@ function TripActive({
   const days = daysUntilTrip(activeTrip.tripDate);
   const doneSet = new Set(activeTrip.done);
   const locationId = gygLocationId(dest);
+  const coords = cityCoords(dest);
 
   const sortedTasks = dd
     ? [...dd.tasks].sort((a, b) => {
@@ -367,6 +370,23 @@ function TripActive({
           </Tile>
         </div>
       </div>
+
+      {/* Smart packing list */}
+      {coords ? (
+        <div className="mt-5">
+          <Tile id="packing" title="Smart packing list" icon={<Backpack className="h-5 w-5 text-primary" />}>
+            <PackingList
+              key={activeTrip.id}
+              tripId={activeTrip.id}
+              destination={dest}
+              cityName={activeTrip.cityName}
+              lat={coords.lat}
+              lng={coords.lng}
+              startDate={activeTrip.tripDate}
+            />
+          </Tile>
+        </div>
+      ) : null}
 
       {/* Identity artifacts */}
       <div className="mt-5 grid gap-5 lg:grid-cols-2">
