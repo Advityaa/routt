@@ -3,6 +3,7 @@ import { Fraunces, Schibsted_Grotesk } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
+import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 
 const fraunces = Fraunces({
@@ -18,6 +19,7 @@ const schibsted = Schibsted_Grotesk({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: "Routt — First-trip playbooks for Indian travellers",
   description:
     "Honest guides for first-time Indian international travellers: the right eSIM, zero-markup forex, the cab app locals use, where to eat, and how to not overpay.",

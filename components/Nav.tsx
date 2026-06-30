@@ -32,16 +32,16 @@ export default function Nav() {
         </Link>
         <div className="flex items-center gap-1 font-body text-sm sm:gap-6">
           <Link
+            href="/guides"
+            className="hidden min-h-[44px] items-center px-2 text-ink/70 transition-colors hover:text-navy md:flex"
+          >
+            Guides
+          </Link>
+          <Link
             href="/#destinations"
             className="hidden min-h-[44px] items-center px-2 text-ink/70 transition-colors hover:text-navy md:flex"
           >
             Destinations
-          </Link>
-          <Link
-            href="/#how"
-            className="hidden min-h-[44px] items-center px-2 text-ink/70 transition-colors hover:text-navy md:flex"
-          >
-            How it works
           </Link>
           <Link
             href="/plan"
