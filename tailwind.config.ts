@@ -1,76 +1,74 @@
 import type { Config } from "tailwindcss";
 
+/**
+ * Routt v1 — Tailwind config.
+ * Colors map to role-based CSS variables defined in app/globals.css, so every
+ * utility (bg-canvas, text-fg, border-line, text-verdict-good…) auto-themes
+ * between dark (default) and light. Mobile-first: design at 390px, scale up.
+ */
 const config: Config = {
   content: [
-    "./app/**/*.{ts,tsx,mdx}",
+    "./app/**/*.{ts,tsx}",
     "./components/**/*.{ts,tsx}",
-    "./content/**/*.mdx",
+    "./lib/**/*.{ts,tsx}",
   ],
   theme: {
     extend: {
       colors: {
-        // Shades of blue only. Coral is for buttons only.
-        primary: "#1E6FB8",
-        navy: "#13548F",
-        fill: "#DEEBF7",
-        hairline: "#D6E3F0",
-        bg: "#FAFCFE",
-        ink: "#152A3E",
-        coral: "#F0633C",
-        // Living Canvas (dark surface) palette — accent stays in the blue family.
-        canvasbg: "#0A141D",
-        skyaccent: "#7EC8FF",
-        canvasmuted: "#8AA0B4",
+        canvas: "var(--canvas)",
+        surface: "var(--surface)",
+        elevate: "var(--elevate)",
+        line: "var(--line)",
+        fg: "var(--fg)",
+        muted: "var(--muted)",
+        faint: "var(--faint)",
+        accent: "var(--accent)",
+        "accent-deep": "var(--accent-deep)",
+        "accent-fill": "var(--accent-fill)",
+        "accent-ink": "var(--accent-ink)",
+        "accent-soft": "var(--accent-soft)",
+        verdict: {
+          good: "var(--verdict-good)",
+          fading: "var(--verdict-fading)",
+          trap: "var(--verdict-trap)",
+        },
       },
       fontFamily: {
-        display: ["var(--font-fraunces)", "Georgia", "serif"],
-        body: ["var(--font-schibsted)", "system-ui", "sans-serif"],
+        display: ["var(--font-display)", "Georgia", "serif"],
+        sans: ["var(--font-body)", "system-ui", "sans-serif"],
+        mono: ["var(--font-mono)", "ui-monospace", "monospace"],
+      },
+      fontSize: {
+        // Mobile-first scale. Eyebrow = the uppercase tracked-out labels.
+        eyebrow: ["11px", { lineHeight: "1", letterSpacing: "0.14em" }],
+        "display-sm": ["22px", { lineHeight: "1.12", letterSpacing: "-0.01em" }],
+        display: ["28px", { lineHeight: "1.06", letterSpacing: "-0.015em" }],
+        "display-lg": ["40px", { lineHeight: "1.0", letterSpacing: "-0.02em" }],
       },
       borderRadius: {
-        card: "22px",
-        pill: "100px",
+        badge: "8px",
+        card: "16px",
+        pill: "999px",
       },
       boxShadow: {
-        // Soft shadows only — no heavy effects.
-        soft: "0 1px 2px rgba(19, 84, 143, 0.04), 0 8px 24px rgba(19, 84, 143, 0.06)",
-        lift: "0 2px 4px rgba(19, 84, 143, 0.06), 0 16px 40px rgba(19, 84, 143, 0.12)",
-        nav: "0 1px 0 rgba(214, 227, 240, 1)",
+        // Only meaningful in light mode; dark relies on borders, not shadows.
+        card: "0 1px 2px rgba(20,32,31,0.04), 0 12px 28px rgba(20,32,31,0.06)",
       },
       keyframes: {
-        "fade-rise": {
-          "0%": { opacity: "0", transform: "translateY(8px)" },
+        // Feed items rise in when the list re-ranks (category/time change).
+        rise: {
+          "0%": { opacity: "0", transform: "translateY(6px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
         },
-        "ambient": {
-          "0%, 100%": { opacity: "0.5", transform: "scale(1)" },
-          "50%": { opacity: "0.75", transform: "scale(1.05)" },
-        },
-        "fade-in": {
-          "0%": { opacity: "0" },
-          "100%": { opacity: "1" },
-        },
-        "ken-burns": {
-          "0%": { transform: "scale(1)" },
-          "100%": { transform: "scale(1.12)" },
-        },
-        "issue-pass": {
-          "0%": { opacity: "0", transform: "translateY(28px) rotate(-2deg) scale(0.96)" },
-          "60%": { opacity: "1" },
-          "100%": { opacity: "1", transform: "translateY(0) rotate(0) scale(1)" },
-        },
-        "stamp-press": {
-          "0%": { opacity: "0", transform: "scale(2.4) rotate(-14deg)" },
-          "55%": { opacity: "1", transform: "scale(0.92) rotate(-11deg)" },
-          "100%": { opacity: "1", transform: "scale(1) rotate(-12deg)" },
+        // The one sanctioned badge micro-interaction: a subtle reveal pop.
+        "badge-in": {
+          "0%": { opacity: "0", transform: "scale(0.9)" },
+          "100%": { opacity: "1", transform: "scale(1)" },
         },
       },
       animation: {
-        "fade-rise": "fade-rise 0.5s ease both",
-        "ambient": "ambient 12s ease-in-out infinite",
-        "fade-in": "fade-in 0.45s ease both",
-        "ken-burns": "ken-burns 22s ease-out both",
-        "issue-pass": "issue-pass 0.9s cubic-bezier(0.22, 1, 0.36, 1) both",
-        "stamp-press": "stamp-press 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) both",
+        rise: "rise 0.35s ease both",
+        "badge-in": "badge-in 0.3s cubic-bezier(0.22, 1, 0.36, 1) both",
       },
     },
   },

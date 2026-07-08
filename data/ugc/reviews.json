@@ -1,0 +1,35 @@
+{
+ "_comment": "First-party venue_reviews (real, never seeded). See db/schema.sql.",
+ "reviews": [
+  {
+   "id": "rev-1783434690972-33ilnn",
+   "gers_id": "6f5884f5-834a-49cd-975b-349a8b2cb7f0",
+   "user_id": "u1",
+   "handle": null,
+   "quick": "still-good",
+   "rating": 5,
+   "text": "Still excellent, go early",
+   "is_local": true,
+   "price_paid": null,
+   "photo_url": null,
+   "moderated": false,
+   "reported": false,
+   "created_at": "2026-07-07T14:31:30.972Z"
+  },
+  {
+   "id": "rev-1783434691027-8v6zlc",
+   "gers_id": "6f5884f5-834a-49cd-975b-349a8b2cb7f0",
+   "user_id": "u2",
+   "handle": null,
+   "quick": null,
+   "rating": 4,
+   "text": null,
+   "is_local": false,
+   "price_paid": 120,
+   "photo_url": null,
+   "moderated": false,
+   "reported": false,
+   "created_at": "2026-07-07T14:31:31.027Z"
+  }
+ ]
+}

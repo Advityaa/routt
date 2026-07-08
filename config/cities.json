@@ -1,0 +1,13 @@
+{
+  "_comment": "Per-city extraction config. Adding a city = add an entry, run: npm run extract -- <key>. bbox = [west, south, east, north]. Keep bboxes tight for fast Overture parquet pushdown; widen deliberately.",
+  "bangkok": {
+    "name": "Bangkok",
+    "country": "TH",
+    "bbox": [100.48, 13.7, 100.6, 13.79]
+  },
+  "dubai": {
+    "name": "Dubai",
+    "country": "AE",
+    "bbox": [55.1, 25.03, 55.42, 25.31]
+  }
+}

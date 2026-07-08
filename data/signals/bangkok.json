@@ -1,0 +1,5 @@
+{
+  "_comment": "FIRST-PARTY UGC — kept separate from the licensed venue skeleton (see README Licensing). Keyed by Overture GERS id. is_seed_demo=true on every row until real users exist: the UI must NEVER present these as verified signals.",
+  "city": "bangkok",
+  "signals": {}
+}

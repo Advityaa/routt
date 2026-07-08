@@ -2,102 +2,82 @@
 @tailwind components;
 @tailwind utilities;
 
+/* =========================================================================
+   ROUTT — DESIGN TOKENS
+   Principle: the chrome is near-monochrome so the VERDICT color is the only
+   saturated signal on screen. Tokens are role-based (--canvas/--fg/...) so the
+   same component renders correctly in dark (default) and light.
+   ========================================================================= */
+
+:root,
+[data-theme="light"] {
+  /* Light editorial: near-white paper, ink text, ONE calm green accent. */
+  --canvas: #faf6ed; /* cream — handoff ground truth */
+  --surface: #ffffff; /* cards — clean white */
+  --elevate: #f0e9d8; /* cream-deep — fills, thumbs, inactive */
+  --line: #e7e0cf; /* hairline dividers */
+  --fg: #1c1a16; /* ink */
+  --muted: #6b665c; /* ink-soft */
+  --faint: #a6a69a; /* tertiary — rank numbers, axis labels, disabled */
+
+  /* THE accent — calm confident green. Interactive elements AND the
+     "Still good" verdict share it: one semantic accent, as per the brand. */
+  --accent: #1f8a5b; /* BRAND GREEN — the single brand color, source of truth */
+  --accent-deep: #1f7a52; /* pressed/hover deep variant */
+  --accent-fill: #e7f3ec; /* green-tint — live-status callouts */
+  --accent-ink: #ffffff; /* text/marks on an accent fill */
+  --accent-soft: #e4e4dc; /* neutral base bars in the busy chart */
+
+  /* Verdicts. "Still good" = the accent green. Fading/trap keep quiet semantic
+     colors (they're meaning, not decoration) tuned to the light palette. */
+  --verdict-good: var(--accent); /* "Still good" IS the brand green */
+  --verdict-fading: #9a6410; /* warm amber/ochre */
+  --verdict-trap: #b23a2e; /* honest muted rust-red */
+}
+
+/* Retained dark palette (used only by the internal /design-system toggle). */
+[data-theme="dark"] {
+  --canvas: #0e1416;
+  --surface: #161d1f;
+  --elevate: #1e2729;
+  --line: #2a3437;
+  --fg: #f3efe7;
+  --muted: #8b999b;
+  --faint: #566466;
+
+  --accent: #2fbe86; /* brand green, dark-tuned */
+  --accent-deep: #27a874;
+  --accent-fill: #163526;
+  --accent-ink: #0e1416;
+  --accent-soft: #2a3437;
+
+  --verdict-good: var(--accent);
+  --verdict-fading: #e3a52b;
+  --verdict-trap: #d85c42;
+}
+
 @layer base {
-  :root {
-    /* Destination theming — the reusable accent layer. Overridden per scope
-       by ThemeScope / the home hero; defaults to Routt blue (always valid). */
-    --accent: #1e6fb8;
-    --accent-deep: #13548f;
-    --scrim: rgba(10, 24, 40, 0.55);
-  }
-
   html {
-    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
   }
-
   body {
-    background-color: theme("colors.bg");
-    color: theme("colors.ink");
-    font-family: theme("fontFamily.body");
+    margin: 0;
+    background: var(--canvas);
+    color: var(--fg);
+    font-family: var(--font-body), system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
-    /* Safeguard against any stray element forcing horizontal scroll on mobile. */
-    overflow-x: hidden;
   }
 
-  h1,
-  h2,
-  h3 {
-    font-family: theme("fontFamily.display");
-    color: theme("colors.ink");
-    letter-spacing: -0.01em;
-  }
-
-  ::selection {
-    background-color: theme("colors.fill");
-    color: theme("colors.navy");
+  /* Visible keyboard focus for all interactive elements (mouse clicks stay clean). */
+  :where(a, button, input, textarea, select, [tabindex]):focus-visible {
+    outline: 2px solid var(--fg);
+    outline-offset: 2px;
+    border-radius: 6px;
   }
 }
 
-@layer components {
-  /* Destination accent helpers — any component using these re-themes for free. */
-  .accent-text {
-    color: var(--accent);
-  }
-  .accent-bg {
-    background-color: var(--accent);
-  }
-  .accent-border {
-    border-color: var(--accent);
-  }
-  /* Smoothly animate accent-driven properties when the theme changes. */
-  .theme-transition {
-    transition: background-color 0.4s ease, border-color 0.4s ease,
-      color 0.4s ease, opacity 0.45s ease;
-  }
-  /* Bottom scrim for text over hero photos. */
-  .scrim-overlay {
-    background: linear-gradient(
-      180deg,
-      transparent 30%,
-      var(--scrim) 100%
-    );
-  }
-
-  /* Living Canvas surfaces — frosted white-on-dark tiles. */
-  .canvas-tile {
-    border-radius: 22px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(255, 255, 255, 0.06);
-    backdrop-filter: blur(10px);
-  }
-  .canvas-label {
-    font-family: theme("fontFamily.body");
-    font-size: 0.72rem;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: theme("colors.canvasmuted");
-  }
-  .canvas-badge {
-    font-family: theme("fontFamily.body");
-    font-size: 0.7rem;
-    font-weight: 700;
-    padding: 4px 9px;
-    border-radius: 7px;
-    background: rgba(126, 200, 255, 0.18);
-    color: theme("colors.skyaccent");
-  }
-
-  /* The single glass surface in the whole product: the sticky nav. */
-  .nav-glass {
-    background-color: rgba(250, 252, 254, 0.72);
-    backdrop-filter: saturate(140%) blur(12px);
-    -webkit-backdrop-filter: saturate(140%) blur(12px);
-  }
-}
-
-/* Motion is small + purposeful, and fully disabled on request. */
+/* Respect reduced-motion: neutralize every animation + transition. */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -108,3 +88,63 @@
     scroll-behavior: auto !important;
   }
 }
+
+@layer components {
+  /* -----------------------------------------------------------------------
+     VERDICT BADGE — the signature element. data-verdict drives the color.
+     Tinted fill + saturated text/mark + faint border = a quiet "stamp".
+     ----------------------------------------------------------------------- */
+  .verdict-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.34em;
+    padding: 0.34em 0.62em 0.34em 0.5em;
+    border: 1px solid transparent;
+    border-radius: 999px; /* pill, per the reference screens */
+    font-family: var(--font-body), system-ui, sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 1;
+    letter-spacing: 0.005em;
+    white-space: nowrap;
+  }
+  .verdict-badge[data-size="sm"] {
+    font-size: 11.5px;
+    padding: 0.28em 0.62em 0.28em 0.5em;
+  }
+  .verdict-badge[data-size="lg"] {
+    font-size: 15px;
+    gap: 0.4em;
+    padding: 0.5em 0.95em 0.5em 0.75em;
+  }
+  .verdict-badge[data-verdict="still-good"] {
+    color: var(--verdict-good);
+    background: var(--accent-fill); /* the brand light fill #DBF0E4 */
+    border-color: color-mix(in srgb, var(--verdict-good) 34%, transparent);
+  }
+  .verdict-badge[data-verdict="fading"] {
+    color: var(--verdict-fading);
+    background: color-mix(in srgb, var(--verdict-fading) 14%, var(--surface));
+    border-color: color-mix(in srgb, var(--verdict-fading) 36%, transparent);
+  }
+  .verdict-badge[data-verdict="tourist-trap"] {
+    color: var(--verdict-trap);
+    background: color-mix(in srgb, var(--verdict-trap) 14%, var(--surface));
+    border-color: color-mix(in srgb, var(--verdict-trap) 36%, transparent);
+  }
+  /* Mixed — real but conflicting first-party reports: ink-neutral, not amber. */
+  .verdict-badge[data-verdict="mixed"] {
+    color: var(--muted);
+    background: color-mix(in srgb, var(--fg) 7%, var(--surface));
+    border-color: var(--line);
+  }
+  /* Neutral — honestly "we don't know yet", never green/amber/red. */
+  .verdict-badge[data-verdict="unrated"] {
+    color: var(--muted);
+    background: color-mix(in srgb, var(--muted) 10%, var(--surface));
+    border-color: var(--line);
+  }
+}
+
+@keyframes kenburns { from { transform: scale(1); } to { transform: scale(1.08); } }
+.kenburns { animation: kenburns 22s ease-in-out infinite alternate; }

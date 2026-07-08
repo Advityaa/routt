@@ -12,3 +12,14 @@ next-env.d.ts
 
 # local editor / agent settings
 .claude/
+
+# review artifacts (screenshots)
+/.artifacts/
+
+# Overture extracts — large, reproducible via: npm run extract -- <city>
+/data/venues/
+/data/cache/
+
+# dev screenshots/scripts + runtime UGC store (DB-like, not source)
+/.artifacts/
+/data/ugc/

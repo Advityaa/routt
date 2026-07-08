@@ -1,42 +1,69 @@
-import type { Metadata } from "next";
-import { Fraunces, Schibsted_Grotesk } from "next/font/google";
-import { Analytics } from "@vercel/analytics/react";
-import Nav from "@/components/Nav";
-import Footer from "@/components/Footer";
-import { SITE_URL } from "@/lib/site";
+import type { Metadata, Viewport } from "next";
+import { Fraunces, Inter, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
+import ServiceWorkerRegistrar from "@/components/ServiceWorkerRegistrar";
+import OfflineIndicator from "@/components/OfflineIndicator";
+import BottomNav from "@/components/BottomNav";
+import { RouttProvider } from "@/lib/context/RouttContext";
 
-const fraunces = Fraunces({
+/**
+ * Type system (light editorial, per the reference screens):
+ * - display: Fraunces — large confident serif for headings and venue names.
+ * - body:    Inter — clean grotesk for body/meta/UI.
+ * - mono:    IBM Plex Mono — kept for credibility evidence/counts, so the
+ *            reasoning reads like verified receipts, not marketing copy.
+ * All self-hosted via next/font (no runtime fetch → offline-safe PWA).
+ */
+const display = Fraunces({
   subsets: ["latin"],
-  variable: "--font-fraunces",
+  variable: "--font-display",
   display: "swap",
 });
-
-const schibsted = Schibsted_Grotesk({
+const body = Inter({
   subsets: ["latin"],
-  variable: "--font-schibsted",
+  variable: "--font-body",
+  display: "swap",
+});
+const mono = IBM_Plex_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  variable: "--font-mono",
   display: "swap",
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(SITE_URL),
-  title: "Routt — First-trip playbooks for Indian travellers",
+  title: "Routt",
   description:
-    "Honest guides for first-time Indian international travellers: the right eSIM, zero-markup forex, the cab app locals use, where to eat, and how to not overpay.",
+    "Right now, near you — what's genuinely worth going to. A short, credibility-verified list of places to Eat, Drink, Shop, and See.",
+  applicationName: "Routt",
+  appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: "Routt" },
+  icons: {
+    icon: [
+      { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: "/icons/apple-touch-icon.png",
+  },
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+// Mobile-first; installable full-screen PWA. theme-color tracks the active scheme.
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#FAF6ED",
+};
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${fraunces.variable} ${schibsted.variable}`}>
+    <html lang="en" className={`${display.variable} ${body.variable} ${mono.variable}`}>
       <body>
-        <Nav />
-        <main>{children}</main>
-        <Footer />
-        <Analytics />
+        <RouttProvider>
+          <ServiceWorkerRegistrar />
+          <OfflineIndicator />
+          {children}
+          <BottomNav />
+        </RouttProvider>
       </body>
     </html>
   );
