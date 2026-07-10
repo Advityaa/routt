@@ -33,7 +33,10 @@ export default function EventsPage() {
 
   useEffect(() => {
     let alive = true;
-    getEventsThisWeek(BANGKOK_DEFAULT).then((res) => {
+    const at = new URLSearchParams(window.location.search).get("at");
+    const [la, ln] = (at ?? "").split(",").map(Number);
+    const coords = Number.isFinite(la) && Number.isFinite(ln) ? { lat: la, lng: ln } : BANGKOK_DEFAULT;
+    getEventsThisWeek(coords).then((res) => {
       if (alive) setEvents(res);
     });
     return () => {

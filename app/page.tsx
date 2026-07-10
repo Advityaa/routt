@@ -72,7 +72,15 @@ export default function Home() {
       if (Number.isFinite(h) && h >= 0 && h <= 23) setHourOverride(Math.floor(h));
     }
     const tick = setInterval(() => setNow(new Date()), 30_000);
-    requestLocation();
+    // Dev/test override: ?at=25.2,55.27 pins the location (like ?hour=).
+    const at = new URLSearchParams(window.location.search).get("at");
+    const [la, ln] = (at ?? "").split(",").map(Number);
+    if (Number.isFinite(la) && Number.isFinite(ln)) {
+      setCoords({ lat: la, lng: ln });
+      setLocStatus("gps");
+    } else {
+      requestLocation();
+    }
     return () => clearInterval(tick);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
