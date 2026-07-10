@@ -24,7 +24,7 @@ export default function BottomNav() {
     for (const k of ["at", "hour"]) { const v = cur.get(k); if (v) kept.set(k, v); }
     setKeep(kept.toString());
   }, [pathname]);
-  const MAIN = new Set(["/", "/trip", "/arrival", "/events", "/me", "/worlds"]);
+  const MAIN = new Set(["/", "/food", "/trip", "/arrival", "/events", "/me", "/worlds"]);
   if (!MAIN.has(pathname)) return null;
 
   return (

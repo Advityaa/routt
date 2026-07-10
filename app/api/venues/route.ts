@@ -46,6 +46,14 @@ export async function GET(req: Request): Promise<Response> {
   let pool = file.venues;
   if (id) pool = pool.filter((v) => v.gers_id === id);
 
+  // Food-world lens: keyword filter over basic_category + taxonomy (Overture/
+  // OSM diet + cuisine tags where real data has them).
+  const taxq = q.get("taxq");
+  if (taxq) {
+    const re = new RegExp(taxq.split(",").join("|"), "i");
+    pool = pool.filter((v) => re.test(`${v.basic_category ?? ""} ${v.taxonomy ?? ""}`));
+  }
+
   // Name search (paste-a-link resolver): distinctive-token match, ≥50% of the
   // venue's name tokens must appear in the query — same rule as the mock path.
   const text = q.get("q")?.toLowerCase();
