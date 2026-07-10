@@ -29,20 +29,23 @@ export default function BottomNav() {
   if (!MAIN.has(pathname)) return null;
 
   return (
-    <nav aria-label="Worlds" className="fixed inset-x-5 z-40 rounded-pill border border-line/80 bg-canvas/80 shadow-[0_12px_32px_-12px_rgba(28,26,22,0.35)] backdrop-blur-xl"
-      style={{ bottom: "calc(12px + env(safe-area-inset-bottom))" }}>
-      <ul className="mx-auto flex max-w-[400px] items-stretch justify-around px-2 py-1">
-        {WORLDS.filter((w) => ["explore","food","nightlife","trip"].includes(w.id)).map((w) => {
+    <nav aria-label="Worlds" className="fixed inset-x-0 z-40 flex justify-center"
+      style={{ bottom: "calc(14px + env(safe-area-inset-bottom))" }}>
+      <ul className="flex items-center gap-7 rounded-pill bg-[#1C1A16] py-3 pl-3 pr-7 shadow-[0_18px_40px_-14px_rgba(28,26,22,0.55)]">
+        {WORLDS.filter((w) => ["explore", "food", "nightlife", "trip"].includes(w.id)).map((w) => {
           const [base, preset] = w.route.split("?");
           const active = pathname === base && (new URLSearchParams(preset).get("cat") ?? null) === cat;
           const href = base + (preset || keep ? `?${[preset, keep].filter(Boolean).join("&")}` : "");
           const Icon = ICONS[w.icon];
           return (
-            <li key={w.id} className="flex-1">
-              <Link href={href} aria-current={active ? "page" : undefined}
-                className={`flex min-h-[52px] flex-col items-center justify-center gap-1 py-1 transition ${active ? "text-accent" : "text-muted hover:text-fg"}`}>
-                <Icon size={20} strokeWidth={active ? 2 : 1.6} aria-hidden />
-                {active ? <span className="text-[10px] font-semibold tracking-wide">{w.short}</span> : null}
+            <li key={w.id}>
+              <Link href={href} aria-current={active ? "page" : undefined} aria-label={w.label}
+                className={`flex items-center justify-center rounded-full transition-all ${
+                  active
+                    ? "-my-3 h-[52px] w-[52px] bg-accent text-white shadow-[0_8px_20px_-4px_rgba(31,138,91,0.6),inset_0_1px_0_rgba(255,255,255,0.25)]"
+                    : "h-9 w-9 text-[#8F887A] hover:text-[#F5EFE2]"
+                }`}>
+                <Icon size={active ? 21 : 20} strokeWidth={active ? 2 : 1.7} aria-hidden />
               </Link>
             </li>
           );
