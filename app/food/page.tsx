@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { MapPin, Car, Bookmark } from "lucide-react";
+import ActionBar from "@/components/ActionBar";
 import { getVenueImage } from "@/lib/placeholderImages";
 import { getActiveCity, type CityDef, CITIES } from "@/lib/worlds/cities";
-import { savePlace } from "@/lib/savedTrip";
+
 
 /** FOOD world — appetising, photography-led, country-agnostic. Lenses pull
  *  Overture/OSM diet + cuisine tags where the city has real data; honest mock
@@ -28,7 +28,6 @@ const dietBadges = (v: Hit) => {
 const VERDICT: Record<string, [string, string]> = { "still-good": ["Still good", "var(--accent)"], fading: ["Fading", "var(--verdict-fading)"], mixed: ["Mixed", "var(--muted)"] };
 
 function Card({ v }: { v: Hit }) {
-  const [saved, setSaved] = useState(false);
   const [label, color] = VERDICT[v.signals?.verdict_state ?? ""] ?? ["Not rated yet", "#B5AE9C"];
   return (
     <div className="w-[210px] shrink-0">
@@ -47,11 +46,8 @@ function Card({ v }: { v: Hit }) {
       </Link>
       <div className="mt-1.5 flex items-center justify-between px-0.5">
         <span className="text-[10.5px] font-semibold" style={{ color }}>{label}</span>
-        <span className="flex gap-2.5 text-muted">
-          <a aria-label="View on map" href={`https://maps.google.com/?q=${v.lat},${v.lng}`} target="_blank" rel="noreferrer"><MapPin size={14} /></a>
-          <a aria-label="Cab here" href={`https://m.uber.com/ul/?action=setPickup&dropoff[latitude]=${v.lat}&dropoff[longitude]=${v.lng}`} target="_blank" rel="noreferrer"><Car size={14} /></a>
-          <button aria-label="Save to trip" onClick={() => { if (!v.mock) { savePlace(v.gers_id); setSaved(true); } }} className={saved ? "text-accent" : ""}><Bookmark size={14} fill={saved ? "currentColor" : "none"} /></button>
-        </span>
+        <ActionBar lat={v.lat} lng={v.lng} name={v.name} gersId={v.mock ? undefined : v.gers_id} country={getActiveCity().country} />
+
       </div>
     </div>
   );

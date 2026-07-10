@@ -12,6 +12,8 @@ import BusyChart from "@/components/BusyChart";
 import GettingThereBack from "@/components/GettingThereBack";
 import TrustReport from "@/components/TrustReport";
 import ContributeCard from "@/components/ContributeCard";
+import ActionBar from "@/components/ActionBar";
+import { getActiveCity } from "@/lib/worlds/cities";
 
 const UGC_ENABLED = process.env.NEXT_PUBLIC_DATA_MODE === "db";
 const BANGKOK_DEFAULT = { lat: 13.7376, lng: 100.5602 };
@@ -160,6 +162,8 @@ export default function PlaceDetailPage({ params }: { params: { id: string } }) 
           ))}
         </div>
         {localCost ? <p className="mt-2 font-mono text-[11px] text-faint">≈ {localCost} · approx</p> : null}
+
+        <ActionBar lat={place.lat} lng={place.lng} name={place.name} gersId={place.id} country={getActiveCity().country} className="mt-4 justify-center gap-8 border-b border-line pb-4 [&_svg]:h-[18px] [&_svg]:w-[18px]" />
 
         {/* How we checked this */}
         {place.sources?.length ? (
