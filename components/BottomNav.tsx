@@ -29,9 +29,10 @@ export default function BottomNav() {
   if (!MAIN.has(pathname)) return null;
 
   return (
-    <nav aria-label="Worlds" className="fixed inset-x-0 z-40 flex justify-center"
+    <nav aria-label="Worlds" className="fixed inset-x-5 z-40"
       style={{ bottom: "calc(14px + env(safe-area-inset-bottom))" }}>
-      <ul className="flex items-center gap-5 rounded-pill bg-[#1C1A16]/85 px-4 py-3 shadow-[0_18px_40px_-14px_rgba(28,26,22,0.5)] backdrop-blur-md">
+      <ul className="mx-auto flex max-w-[400px] items-center justify-around rounded-pill border border-white/25 bg-[#1C1A16]/[0.14] px-2 py-2 shadow-[0_16px_40px_-16px_rgba(28,26,22,0.45)]"
+        style={{ backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)" }}>
         {WORLDS.filter((w) => ["explore", "food", "nightlife", "activities", "trip"].includes(w.id)).map((w) => {
           const [base, preset] = w.route.split("?");
           const active = pathname === base && (new URLSearchParams(preset).get("cat") ?? null) === cat;
@@ -40,12 +41,11 @@ export default function BottomNav() {
           return (
             <li key={w.id}>
               <Link href={href} aria-current={active ? "page" : undefined} aria-label={w.label}
-                className={`flex items-center justify-center rounded-full transition-all ${
-                  active
-                    ? "-my-3 h-[52px] w-[52px] bg-accent text-white shadow-[0_8px_20px_-4px_rgba(31,138,91,0.6),inset_0_1px_0_rgba(255,255,255,0.25)]"
-                    : "h-9 w-9 text-[#8F887A] hover:text-[#F5EFE2]"
+                className={`flex h-10 items-center gap-1.5 rounded-pill px-3 transition-colors ${
+                  active ? "bg-accent/15 text-accent" : "text-fg/60 hover:text-fg"
                 }`}>
-                <Icon size={active ? 21 : 20} strokeWidth={active ? 2 : 1.7} aria-hidden />
+                <Icon size={19} strokeWidth={active ? 2 : 1.7} aria-hidden />
+                {active ? <span className="text-[11px] font-semibold">{w.short}</span> : null}
               </Link>
             </li>
           );
