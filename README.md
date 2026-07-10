@@ -37,6 +37,12 @@ Dev-only helper: append `?hour=NN` (0–23) to any screen to override the time-o
 | `/events` | This week's events, grouped by day. |
 | `/design-system` | Internal token/component reference (noindex). |
 
+## Data sources
+
+**The approved free-source registry lives in [docs/DATA-SOURCES.md](docs/DATA-SOURCES.md)** —
+any external integration must come from that list. Google/Foursquare/Reddit
+adapters are retired (dormant reference only).
+
 ## Architecture: one data boundary
 
 **Nothing in the UI talks to a data source directly.** Every read goes through
