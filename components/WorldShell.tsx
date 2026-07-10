@@ -28,7 +28,7 @@ export default function WorldShell({ children }: { children: React.ReactNode }) 
           className="flex items-center gap-1.5 font-display text-[17px] font-semibold text-fg">
           {city.label} <ChevronDown size={15} className="text-muted" />
         </button>
-        <Link href="#search" aria-label="Search" className="flex h-9 w-9 items-center justify-center rounded-full border border-line text-fg">
+        <Link href="/search" aria-label="Search" className="flex h-9 w-9 items-center justify-center rounded-full border border-line text-fg">
           <Search size={16} strokeWidth={1.8} />
         </Link>
       </header>

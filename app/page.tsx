@@ -125,7 +125,7 @@ export default function ExplorePage() {
             {city.dataMode === "mock" ? <span className="mb-2 font-mono text-[9.5px] uppercase text-white/60">preview data</span> : null}
           </div>
           {/* Search front door */}
-          <Link href="/trip" className="mt-3 flex items-center gap-2.5 rounded-pill border border-white/[0.35] bg-white/[0.16] px-4 py-3 text-[13.5px] text-white/85 backdrop-blur-md">
+          <Link href="/search" className="mt-3 flex items-center gap-2.5 rounded-pill border border-white/[0.35] bg-white/[0.16] px-4 py-3 text-[13.5px] text-white/85 backdrop-blur-md">
             <Search size={15} strokeWidth={1.8} /> Search {city.label} — places, links…
           </Link>
         </div>
