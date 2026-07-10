@@ -33,7 +33,7 @@ function Card({ v }: { v: Hit }) {
     <div className="w-[210px] shrink-0">
       <Link href={v.mock ? "#" : `/place/${v.gers_id}`} className="relative block h-[150px] overflow-hidden bg-elevate" style={{ borderRadius: 16 }}>
         <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${getVenueImage("eat", v.gers_id)})` }} />
-        <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, transparent 45%, rgba(10,9,6,0.72) 100%)" }} />
+        <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(10,9,6,0.02) 30%, rgba(10,9,6,0.55) 68%, rgba(10,9,6,0.92) 100%)" }} />
         <div className="absolute left-2.5 top-2.5 flex gap-1">
           {dietBadges(v).map((d) => (
             <span key={d} className="rounded-pill bg-white/85 px-2 py-0.5 font-mono text-[9px] font-medium uppercase text-fg">{d}</span>

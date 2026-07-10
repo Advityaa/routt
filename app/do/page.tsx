@@ -63,8 +63,8 @@ export default function DoPage() {
             {acts.map((a) => (
               <a key={a.id} href={gygUrl(a.q, city.label)} target="_blank" rel="sponsored noopener noreferrer" className="w-[200px] shrink-0">
                 <div className="relative h-[150px] overflow-hidden bg-elevate" style={{ borderRadius: 16 }}>
-                  <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${getVenueImage("see", `${city.id}-${a.id}`)})` }} />
-                  <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, transparent 40%, rgba(10,9,6,0.75) 100%)" }} />
+                  <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${getVenueImage("see", `${city.id}-${a.id}`, a.q + " " + a.title)})` }} />
+                  <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(10,9,6,0.02) 28%, rgba(10,9,6,0.55) 65%, rgba(10,9,6,0.92) 100%)" }} />
                   <span className="absolute right-2 top-2 rounded-pill bg-white/85 px-2 py-0.5 font-mono text-[9.5px] text-fg">★ {a.rating}</span>
                   <div className="absolute inset-x-3 bottom-2.5 text-white">
                     <div className="line-clamp-2 font-display text-[15px] font-medium leading-[1.2]">{a.title}</div>

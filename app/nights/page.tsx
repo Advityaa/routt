@@ -17,7 +17,7 @@ function Poster({ img, title, sub, tag, href }: { img: string; title: string; su
   const inner = (
     <div className="relative h-[210px] w-[160px] shrink-0 overflow-hidden bg-[#1E1B15]" style={{ borderRadius: 14 }}>
       <div className="absolute inset-0 bg-cover bg-center opacity-80" style={{ backgroundImage: `url(${img})` }} />
-      <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(5,4,2,0.1) 30%, rgba(5,4,2,0.92) 100%)" }} />
+      <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(5,4,2,0.05) 22%, rgba(5,4,2,0.65) 60%, rgba(5,4,2,0.95) 100%)" }} />
       {tag ? <span className="absolute left-2 top-2 rounded-pill bg-black/50 px-2 py-0.5 font-mono text-[9px] uppercase tracking-wide text-accent backdrop-blur-sm">{tag}</span> : null}
       <div className="absolute inset-x-2.5 bottom-2.5 text-white">
         <div className="line-clamp-2 font-display text-[14.5px] font-medium leading-[1.2]">{title}</div>
@@ -62,7 +62,7 @@ export default function NightsPage() {
 
   const today = new Date().toISOString().slice(0, 10);
   const when = (e: Event) => `${e.venue} · ${e.dateISO.slice(5, 16).replace("T", " ")}`;
-  const posterFor = (e: Event) => <Poster key={e.id} img={getVenueImage("see", e.id)} title={e.name} sub={when(e)} tag={e.type} href={e.ticketUrl} />;
+  const posterFor = (e: Event) => <Poster key={e.id} img={getVenueImage("nightlife", e.id, e.type + " " + e.name)} title={e.name} sub={when(e)} tag={e.type} href={e.ticketUrl} />;
 
   return (
     <main className="mx-auto min-h-[100dvh] max-w-[440px] pb-28" style={{ background: "#14110C" }}>

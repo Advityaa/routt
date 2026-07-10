@@ -25,13 +25,14 @@ export default function BottomNav() {
     setKeep(kept.toString());
   }, [pathname]);
   const MAIN = new Set(["/", "/food", "/nights", "/do", "/trip", "/arrival", "/events", "/me", "/worlds"]);
+  const BAR = new Set(["explore", "food", "nightlife", "trip"]); // Do lives in Explore; Me in the header
   if (!MAIN.has(pathname)) return null;
 
   return (
-    <nav aria-label="Worlds" className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-canvas/95 backdrop-blur"
-      style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
-      <ul className="mx-auto flex max-w-[440px] items-stretch justify-around px-1 pt-1.5">
-        {WORLDS.map((w) => {
+    <nav aria-label="Worlds" className="fixed inset-x-5 z-40 rounded-pill border border-line/80 bg-canvas/80 shadow-[0_12px_32px_-12px_rgba(28,26,22,0.35)] backdrop-blur-xl"
+      style={{ bottom: "calc(12px + env(safe-area-inset-bottom))" }}>
+      <ul className="mx-auto flex max-w-[400px] items-stretch justify-around px-2 py-1">
+        {WORLDS.filter((w) => ["explore","food","nightlife","trip"].includes(w.id)).map((w) => {
           const [base, preset] = w.route.split("?");
           const active = pathname === base && (new URLSearchParams(preset).get("cat") ?? null) === cat;
           const href = base + (preset || keep ? `?${[preset, keep].filter(Boolean).join("&")}` : "");
@@ -41,7 +42,7 @@ export default function BottomNav() {
               <Link href={href} aria-current={active ? "page" : undefined}
                 className={`flex min-h-[52px] flex-col items-center justify-center gap-1 py-1 transition ${active ? "text-accent" : "text-muted hover:text-fg"}`}>
                 <Icon size={20} strokeWidth={active ? 2 : 1.6} aria-hidden />
-                <span className={`text-[10px] tracking-wide ${active ? "font-semibold" : "font-medium"}`}>{w.short}</span>
+                {active ? <span className="text-[10px] font-semibold tracking-wide">{w.short}</span> : null}
               </Link>
             </li>
           );

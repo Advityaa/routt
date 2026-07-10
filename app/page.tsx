@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Search } from "lucide-react";
+import { Search, User } from "lucide-react";
 import type { Category, ScoredPlace, CredibilityVerdict } from "@/lib/types";
 import { getNearbyPlaces } from "@/lib/dataProvider";
 import { useRoutt } from "@/lib/context/RouttContext";
@@ -14,6 +14,7 @@ import AmbientBackground from "@/components/AmbientBackground";
  *  Real rows via the venue store where dataMode==="real"; honest mock preview
  *  cards elsewhere. Hero + greeting come from the context engine. */
 
+const PH = ["explore attractions…", "find great food…", "what\u2019s on tonight…", "book an activity…", "where to next…"];
 const GREET = { dawn: "Good morning", day: "Good afternoon", dusk: "Good evening", night: "Good evening" } as const;
 
 interface CardData { id: string; name: string; meta: string; photo: string; verdict?: CredibilityVerdict; href?: string }
@@ -50,7 +51,7 @@ function Carousel({ title, cards }: { title: string; cards: CardData[] }) {
           const inner = (
             <div className="relative h-[240px] w-[180px] shrink-0 overflow-hidden bg-elevate" style={{ borderRadius: 16 }}>
               <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${c.photo})` }} />
-              <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(10,9,6,0.05) 40%, rgba(10,9,6,0.78) 100%)" }} />
+              <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(10,9,6,0.02) 30%, rgba(10,9,6,0.55) 68%, rgba(10,9,6,0.92) 100%)" }} />
               {c.verdict ? (
                 <span className="absolute left-2.5 top-2.5 rounded-pill bg-black/35 px-2 py-1 text-[10px] font-semibold backdrop-blur-sm" style={{ color: CHIP[c.verdict] === "var(--accent)" ? "#7ADCA9" : "#E8E2D2" }}>
                   {CHIP_LABEL[c.verdict]}
@@ -73,6 +74,7 @@ export default function ExplorePage() {
   const routt = useRoutt();
   const [city, setCity] = useState<CityDef>(CITIES[0]);
   const [hour, setHour] = useState(new Date().getHours());
+  const [phIdx, setPhIdx] = useState(0);
   const [rows, setRows] = useState<{ seeing: CardData[]; attractions: CardData[]; near: CardData[] }>({ seeing: [], attractions: [], near: [] });
 
   useEffect(() => {
@@ -80,6 +82,8 @@ export default function ExplorePage() {
     const h = Number(q.get("hour"));
     if (Number.isFinite(h) && h >= 0 && h <= 23) setHour(h);
     setCity(getActiveCity());
+    const t = setInterval(() => setPhIdx((i) => (i + 1) % 5), 2500);
+    return () => clearInterval(t);
   }, []);
 
   useEffect(() => {
@@ -108,11 +112,14 @@ export default function ExplorePage() {
         <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(10,9,6,0.35) 0%, rgba(10,9,6,0.1) 35%, rgba(10,9,6,0.85) 100%)" }} />
         <div className="relative z-[2] flex items-center justify-between px-5 pt-5">
           <span className="font-display text-[18px] font-semibold text-white">Routt</span>
+          <span className="flex items-center gap-2">
           {routt.weather ? (
             <span className="rounded-pill border border-white/[0.28] bg-white/[0.14] px-3 py-[7px] font-mono text-[10.5px] uppercase tracking-[0.05em] text-white backdrop-blur-md">
               {routt.weather.tempC}° · {routt.weather.condition}
             </span>
           ) : null}
+          <Link href="/me" aria-label="Profile" className="flex h-9 w-9 items-center justify-center rounded-full border border-white/[0.28] bg-white/[0.14] text-white backdrop-blur-md"><User size={15} strokeWidth={1.8} /></Link>
+          </span>
         </div>
         <div className="absolute inset-x-5 bottom-[22px] z-[2]">
           <div className="font-mono text-[11px] uppercase tracking-[0.08em] text-white/80">{GREET[routt.timeOfDay]} in</div>
@@ -124,18 +131,20 @@ export default function ExplorePage() {
             </select>
             {city.dataMode === "mock" ? <span className="mb-2 font-mono text-[9.5px] uppercase text-white/60">preview data</span> : null}
           </div>
-          {/* Search front door */}
-          <Link href="/search" className="mt-3 flex items-center gap-2.5 rounded-pill border border-white/[0.35] bg-white/[0.16] px-4 py-3 text-[13.5px] text-white/85 backdrop-blur-md">
-            <Search size={15} strokeWidth={1.8} /> Search {city.label} — places, links…
-          </Link>
         </div>
       </section>
+
+      {/* Search front door — straddles the hero seam */}
+      <Link href="/search" className="relative z-[3] mx-5 -mt-[26px] flex items-center gap-2.5 rounded-pill border border-white/60 bg-white/85 px-4 py-[13px] text-[13.5px] text-muted shadow-[0_14px_30px_-12px_rgba(0,0,0,0.4)] backdrop-blur-xl">
+        <Search size={15} strokeWidth={1.8} className="shrink-0 text-fg" />
+        <span key={phIdx} className="animate-rise">{PH[phIdx]}</span>
+      </Link>
 
       {/* Category lenses */}
       <div className="mt-4 flex gap-2 px-5">
         <span className="rounded-pill bg-fg px-4 py-2 text-[13px] font-semibold text-canvas">See</span>
-        <Link href={`/?cat=shop`} className="rounded-pill border border-line px-4 py-2 text-[13px] font-medium text-muted">Do</Link>
-        <Link href="/?cat=eat" className="rounded-pill border border-line px-4 py-2 text-[13px] font-medium text-muted">Eat → Food</Link>
+        <Link href="/do" className="rounded-pill border border-line px-4 py-2 text-[13px] font-medium text-muted">Do</Link>
+        <Link href="/food" className="rounded-pill border border-line px-4 py-2 text-[13px] font-medium text-muted">Eat</Link>
       </div>
 
       <Carousel title="Worth seeing now" cards={rows.seeing} />
