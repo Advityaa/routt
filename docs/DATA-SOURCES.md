@@ -41,7 +41,7 @@ retired — see "Status vs codebase" below). Licensing flags are load-bearing.
 ## Events
 | Source | Coverage | Status |
 |---|---|---|
-| Ticketmaster Discovery (primary) | US/UK/CA/MX/select EU — 5k/day, 5 req/s | ⬜ not built |
+| Ticketmaster Discovery (primary) | US/UK/CA/MX/select EU **+ UAE (AE)**; NOT TH/VN/SG/LK/ID — 5k/day, 5 req/s | 🔶 Built — `/api/events` (UAE only, 6h cache, curated fallback); awaiting `TICKETMASTER_KEY` for live test |
 | SeatGeek (secondary) | US/CA | ⬜ not built |
 | Skiddle | UK only | ⬜ not built |
 | Bandsintown | per-artist only — NOT city discovery | ⬜ not built |

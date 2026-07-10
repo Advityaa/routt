@@ -425,6 +425,15 @@ export interface EventsQuery {
  * Events happening this week near a point, soonest first (distance breaks ties).
  */
 export async function getEventsThisWeek({ lat, lng }: EventsQuery): Promise<Event[]> {
+  // Region adapter: real Ticketmaster events where covered (UAE); everywhere
+  // else the endpoint answers source:"curated" and we use the editorial layer.
+  try {
+    const res = await fetch(`/api/events?lat=${lat}&lng=${lng}`);
+    if (res.ok) {
+      const d = (await res.json()) as { source: string; events: Event[] | null };
+      if (d.source === "ticketmaster" && d.events?.length) return d.events;
+    }
+  } catch { /* offline / error → curated fallback */ }
   return [...mockEvents].sort((a, b) => {
     const byDate = Date.parse(a.dateISO) - Date.parse(b.dateISO);
     if (byDate !== 0) return byDate;
