@@ -3,57 +3,45 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { MapPin, Bookmark, Plane, Calendar } from "lucide-react";
+import { Compass, Utensils, Music, Mountain, Bookmark, User } from "lucide-react";
+import { WORLDS } from "@/lib/worlds/config";
+
+const ICONS = { compass: Compass, utensils: Utensils, music: Music, mountain: Mountain, bookmark: Bookmark, user: User } as const;
 
 /**
- * Persistent, thumb-reachable bottom tab bar. Lucide icons, thin strokes;
- * active tab in the accent green (icon + label), inactive grey. Shown on the
- * four top-level screens; hidden on pushed/sub screens (place detail, etc).
+ * World switcher — the persistent shell nav. Green brand chrome, lucide icons;
+ * active world gets the accent. Preserves dev overrides (?at/?hour) and the
+ * world's own query presets across switches.
  */
-const TABS = [
-  { href: "/", label: "Now", Icon: MapPin },
-  { href: "/trip", label: "Trip", Icon: Bookmark },
-  { href: "/arrival", label: "Arrival", Icon: Plane },
-  { href: "/events", label: "Events", Icon: Calendar },
-] as const;
-
-const MAIN_ROUTES = new Set<string>(TABS.map((t) => t.href));
-
 export default function BottomNav() {
   const pathname = usePathname();
-  // Carry dev/test overrides (?at=, ?hour=) across tab navigation, else they
-  // silently drop and the app snaps back to real GPS/time mid-test.
+  const [cat, setCat] = useState<string | null>(null);
   const [keep, setKeep] = useState("");
   useEffect(() => {
     const cur = new URLSearchParams(window.location.search);
+    setCat(cur.get("cat"));
     const kept = new URLSearchParams();
     for (const k of ["at", "hour"]) { const v = cur.get(k); if (v) kept.set(k, v); }
-    setKeep(kept.toString() ? `?${kept.toString()}` : "");
+    setKeep(kept.toString());
   }, [pathname]);
-  if (!MAIN_ROUTES.has(pathname)) return null;
+  const MAIN = new Set(["/", "/trip", "/arrival", "/events", "/me", "/worlds"]);
+  if (!MAIN.has(pathname)) return null;
 
   return (
-    <nav
-      aria-label="Primary"
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-canvas/95 backdrop-blur"
-      style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
-    >
-      <ul className="mx-auto flex max-w-[440px] items-stretch justify-around px-2 pt-1.5">
-        {TABS.map(({ href, label, Icon }) => {
-          const active = pathname === href;
+    <nav aria-label="Worlds" className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-canvas/95 backdrop-blur"
+      style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
+      <ul className="mx-auto flex max-w-[440px] items-stretch justify-around px-1 pt-1.5">
+        {WORLDS.map((w) => {
+          const [base, preset] = w.route.split("?");
+          const active = pathname === base && (new URLSearchParams(preset).get("cat") ?? null) === cat;
+          const href = base + (preset || keep ? `?${[preset, keep].filter(Boolean).join("&")}` : "");
+          const Icon = ICONS[w.icon];
           return (
-            <li key={href} className="flex-1">
-              <Link
-                href={href + keep}
-                aria-current={active ? "page" : undefined}
-                className={`flex min-h-[52px] flex-col items-center justify-center gap-1 rounded-badge py-1 transition ${
-                  active ? "text-accent" : "text-muted hover:text-fg"
-                }`}
-              >
-                <Icon size={21} strokeWidth={active ? 2 : 1.6} aria-hidden />
-                <span className={`font-sans text-[10px] tracking-wide ${active ? "font-semibold" : "font-medium"}`}>
-                  {label}
-                </span>
+            <li key={w.id} className="flex-1">
+              <Link href={href} aria-current={active ? "page" : undefined}
+                className={`flex min-h-[52px] flex-col items-center justify-center gap-1 py-1 transition ${active ? "text-accent" : "text-muted hover:text-fg"}`}>
+                <Icon size={20} strokeWidth={active ? 2 : 1.6} aria-hidden />
+                <span className={`text-[10px] tracking-wide ${active ? "font-semibold" : "font-medium"}`}>{w.short}</span>
               </Link>
             </li>
           );

@@ -1,23 +1,22 @@
 /**
- * Worlds — the app's top-level surfaces. Country-agnostic: a world defines HOW
- * content is framed (icon, theme treatment, route); WHAT it shows comes from
- * the active city (lib/worlds/cities.ts). During migration each world points at
- * its existing screen; routes swap to /worlds/* one at a time without breakage.
+ * Worlds — Routt's top-level spaces. Country-agnostic; the active city
+ * (lib/worlds/cities.ts) supplies content, the world supplies framing.
+ * `tint` gives each world its subtle atmosphere while chrome stays Routt green.
+ * Routes point at each world's live screen; ?cat= presets the feed's lens.
  */
-export interface WorldTheme {
-  accentGrade: "full" | "muted"; // how loudly the world uses the brand accent
-  imagery: "photo-hero" | "document" | "list"; // hero photo vs travel-document vs plain list framing
-}
 export interface WorldDef {
   id: string;
   label: string;
-  icon: "map-pin" | "bookmark" | "plane" | "calendar";
-  theme: WorldTheme;
-  route: string; // current live route (legacy screens until migrated)
+  short: string; // nav label
+  icon: "compass" | "utensils" | "music" | "mountain" | "bookmark" | "user";
+  tint: string; // per-world wash behind the screen (entering a new space)
+  route: string;
 }
 export const WORLDS: WorldDef[] = [
-  { id: "now", label: "Now", icon: "map-pin", theme: { accentGrade: "full", imagery: "photo-hero" }, route: "/" },
-  { id: "trip", label: "Trip", icon: "bookmark", theme: { accentGrade: "muted", imagery: "document" }, route: "/trip" },
-  { id: "arrival", label: "Arrival", icon: "plane", theme: { accentGrade: "muted", imagery: "document" }, route: "/arrival" },
-  { id: "events", label: "Events", icon: "calendar", theme: { accentGrade: "muted", imagery: "list" }, route: "/events" },
+  { id: "explore", label: "Explore", short: "Explore", icon: "compass", tint: "rgba(31,138,91,0.05)", route: "/" },
+  { id: "food", label: "Food", short: "Food", icon: "utensils", tint: "rgba(178,58,46,0.05)", route: "/?cat=eat" },
+  { id: "nightlife", label: "Nightlife & Events", short: "Nights", icon: "music", tint: "rgba(28,26,60,0.06)", route: "/events" },
+  { id: "activities", label: "Activities", short: "Do", icon: "mountain", tint: "rgba(154,100,16,0.05)", route: "/?cat=see" },
+  { id: "trip", label: "My Trip", short: "Trip", icon: "bookmark", tint: "rgba(31,138,91,0.04)", route: "/trip" },
+  { id: "me", label: "Me", short: "Me", icon: "user", tint: "rgba(107,102,92,0.05)", route: "/me" },
 ];

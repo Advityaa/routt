@@ -66,6 +66,8 @@ export default function Home() {
   const prompt = getSituationPrompt(timeOfDay);
 
   useEffect(() => {
+    const cat = new URLSearchParams(window.location.search).get("cat");
+    if (cat === "eat" || cat === "drink" || cat === "shop" || cat === "see") setSelectedCategory(cat);
     const raw = new URLSearchParams(window.location.search).get("hour");
     if (raw !== null) {
       const h = Number(raw);

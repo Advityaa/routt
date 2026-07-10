@@ -3,11 +3,11 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { MapPin, Bookmark, Plane, Calendar, Search, ChevronDown } from "lucide-react";
+import { Compass, Utensils, Music, Mountain, Bookmark, User, Search, ChevronDown } from "lucide-react";
 import { WORLDS } from "@/lib/worlds/config";
 import { CITIES, getActiveCity, setActiveCity, type CityDef } from "@/lib/worlds/cities";
 
-const ICONS = { "map-pin": MapPin, bookmark: Bookmark, plane: Plane, calendar: Calendar } as const;
+const ICONS = { compass: Compass, utensils: Utensils, music: Music, mountain: Mountain, bookmark: Bookmark, user: User } as const;
 
 /**
  * WorldShell — shared header (active city + search entry) and the lightweight
@@ -52,7 +52,7 @@ export default function WorldShell({ children }: { children: React.ReactNode }) 
           return (
             <Link key={w.id} href={w.route}
               className={`flex flex-1 items-center justify-center gap-1.5 rounded-pill border py-2 text-[12.5px] font-medium ${active ? "border-fg bg-fg text-canvas" : "border-line text-muted"}`}>
-              <Icon size={14} strokeWidth={1.8} /> {w.label}
+              <Icon size={14} strokeWidth={1.8} /> {w.short}
             </Link>
           );
         })}
