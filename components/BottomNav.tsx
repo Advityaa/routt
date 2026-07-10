@@ -25,14 +25,14 @@ export default function BottomNav() {
     setKeep(kept.toString());
   }, [pathname]);
   const MAIN = new Set(["/", "/food", "/nights", "/do", "/trip", "/arrival", "/events", "/me", "/worlds"]);
-  const BAR = new Set(["explore", "food", "nightlife", "trip"]); // Do lives in Explore; Me in the header
+  const BAR = new Set(["explore", "food", "nightlife", "activities", "trip"]); // Do lives in Explore; Me in the header
   if (!MAIN.has(pathname)) return null;
 
   return (
     <nav aria-label="Worlds" className="fixed inset-x-0 z-40 flex justify-center"
       style={{ bottom: "calc(14px + env(safe-area-inset-bottom))" }}>
-      <ul className="flex items-center gap-7 rounded-pill bg-[#1C1A16] py-3 pl-3 pr-7 shadow-[0_18px_40px_-14px_rgba(28,26,22,0.55)]">
-        {WORLDS.filter((w) => ["explore", "food", "nightlife", "trip"].includes(w.id)).map((w) => {
+      <ul className="flex items-center gap-5 rounded-pill bg-[#1C1A16]/85 px-4 py-3 shadow-[0_18px_40px_-14px_rgba(28,26,22,0.5)] backdrop-blur-md">
+        {WORLDS.filter((w) => ["explore", "food", "nightlife", "activities", "trip"].includes(w.id)).map((w) => {
           const [base, preset] = w.route.split("?");
           const active = pathname === base && (new URLSearchParams(preset).get("cat") ?? null) === cat;
           const href = base + (preset || keep ? `?${[preset, keep].filter(Boolean).join("&")}` : "");
