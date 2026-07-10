@@ -10,6 +10,9 @@ import { resolvePastedPlace, getSavedPlaces } from "@/lib/dataProvider";
 import { getSaved, savePlace, addUnverified, removeSaved, type SavedItem } from "@/lib/savedTrip";
 import VerdictBadge from "@/components/VerdictBadge";
 import SavedPlaceTag, { tagRotation } from "@/components/SavedPlaceTag";
+import AffiliateLink from "@/components/AffiliateLink";
+import { useRoutt } from "@/lib/context/RouttContext";
+import { Plane as PlaneIcon } from "lucide-react";
 
 const CATEGORY_LABEL: Record<Category, string> = { eat: "Eat", drink: "Drink", shop: "Shop", see: "See" };
 
@@ -121,6 +124,7 @@ export default function TripPage() {
 
       {/* Add your flight — auto-derives the trip (destination + dates) */}
       <FlightSetup />
+      <TripTools />
 
       <PackingList />
 
@@ -314,6 +318,37 @@ function PackingList() {
           </div>
         ) : null;
       })}
+    </section>
+  );
+}
+
+/** Contextual tools — the trip spine. The context engine decides emphasis:
+ *  arrival guide auto-surfaces near/at landing instead of being a fixed tab. */
+function TripTools() {
+  const { tripPhase } = useRoutt();
+  const arrivalHot = tripPhase === "preflight" || tripPhase === "onground";
+  return (
+    <section className="mt-5">
+      {arrivalHot ? (
+        <Link href="/arrival" className="mb-3 flex items-center gap-3 rounded-card border-[1.5px] border-accent bg-accent-fill p-4">
+          <PlaneIcon size={18} className="text-accent" />
+          <span className="min-w-0 flex-1">
+            <span className="block text-[14.5px] font-semibold text-fg">{tripPhase === "onground" ? "You've landed — arrival card" : "Landing soon — arrival card ready"}</span>
+            <span className="text-[12px] text-muted">Checklist, survival card, fair-price check · works offline</span>
+          </span>
+        </Link>
+      ) : null}
+      <p className="pb-2.5 font-mono text-[10.5px] uppercase tracking-[0.1em] text-muted">Trip tools</p>
+      <div className="flex flex-col gap-2.5">
+        <AffiliateLink href="https://example.com/aff/esim?ref=routt" label="eSIM for your destination" sub="Data the moment you land" />
+        <AffiliateLink href="https://example.com/aff/forex?ref=routt" label="Multi-currency travel card" sub="Skip the airport-counter markup" />
+        {!arrivalHot ? (
+          <Link href="/arrival" className="flex items-center justify-between rounded-card border border-line bg-surface px-4 py-3 text-[14px] text-fg">
+            Arrival guide <span className="font-mono text-[11px] text-muted">auto-surfaces on landing</span>
+          </Link>
+        ) : null}
+      </div>
+      <p className="mt-2 text-[10.5px] text-faint">Some links are affiliate links — Routt may earn a commission at no extra cost to you.</p>
     </section>
   );
 }
