@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { MapPin, Bookmark, Plane, Calendar } from "lucide-react";
 
@@ -20,6 +21,15 @@ const MAIN_ROUTES = new Set<string>(TABS.map((t) => t.href));
 
 export default function BottomNav() {
   const pathname = usePathname();
+  // Carry dev/test overrides (?at=, ?hour=) across tab navigation, else they
+  // silently drop and the app snaps back to real GPS/time mid-test.
+  const [keep, setKeep] = useState("");
+  useEffect(() => {
+    const cur = new URLSearchParams(window.location.search);
+    const kept = new URLSearchParams();
+    for (const k of ["at", "hour"]) { const v = cur.get(k); if (v) kept.set(k, v); }
+    setKeep(kept.toString() ? `?${kept.toString()}` : "");
+  }, [pathname]);
   if (!MAIN_ROUTES.has(pathname)) return null;
 
   return (
@@ -34,7 +44,7 @@ export default function BottomNav() {
           return (
             <li key={href} className="flex-1">
               <Link
-                href={href}
+                href={href + keep}
                 aria-current={active ? "page" : undefined}
                 className={`flex min-h-[52px] flex-col items-center justify-center gap-1 rounded-badge py-1 transition ${
                   active ? "text-accent" : "text-muted hover:text-fg"
