@@ -46,6 +46,23 @@ export async function GET(req: Request): Promise<Response> {
   let pool = file.venues;
   if (id) pool = pool.filter((v) => v.gers_id === id);
 
+  // Name search (paste-a-link resolver): distinctive-token match, ≥50% of the
+  // venue's name tokens must appear in the query — same rule as the mock path.
+  const text = q.get("q")?.toLowerCase();
+  if (text) {
+    const qTokens = new Set(text.split(/[^a-z0-9]+/).filter((w) => w.length >= 2));
+    pool = pool
+      .map((v) => {
+        const nameTokens = v.name.toLowerCase().split(/[^a-z0-9]+/).filter((w) => w.length >= 2);
+        if (!nameTokens.length) return { v, score: 0 };
+        const matched = nameTokens.filter((t) => qTokens.has(t)).length;
+        return { v, score: matched >= 1 ? matched / nameTokens.length : 0 };
+      })
+      .filter((x) => x.score >= 0.5)
+      .sort((a, b) => b.score - a.score || (b.v.confidence ?? 0) - (a.v.confidence ?? 0))
+      .map((x) => x.v);
+  }
+
   let rows: ServedVenue[] = pool
     .filter((v) => id || (v.confidence ?? 1) >= minConfidence)
     .map((v) => ({
@@ -57,7 +74,9 @@ export async function GET(req: Request): Promise<Response> {
     }));
 
   if (category) rows = rows.filter((v) => v.app_category === category);
-  if (lat != null && lng != null) rows.sort((a, b) => (a.distance_m ?? 0) - (b.distance_m ?? 0));
+  // Name-search results keep score order (best match first) — distance sort
+  // would let a nearer partial match beat an exact name match.
+  if (!text && lat != null && lng != null) rows.sort((a, b) => (a.distance_m ?? 0) - (b.distance_m ?? 0));
 
   return NextResponse.json({
     city,

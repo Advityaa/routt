@@ -286,6 +286,16 @@ export async function getPlaceById({ id, lat, lng }: PlaceByIdQuery): Promise<Sc
  * to the nearest known neighborhood; later this is real reverse geocoding.
  */
 export async function getAreaLabel({ lat, lng }: { lat: number; lng: number }): Promise<string> {
+  if (DATA_MODE === "db") {
+    try {
+      const res = await fetch(`/api/arealabel?lat=${lat.toFixed(4)}&lng=${lng.toFixed(4)}`);
+      if (res.ok) {
+        const { label } = (await res.json()) as { label: string | null };
+        if (label) return label;
+      }
+    } catch { /* fall through to fallback */ }
+    return "Bangkok";
+  }
   const places = await fetchAllPlaces(lat, lng);
   let nearest: Place | null = null;
   let best = Infinity;
@@ -303,6 +313,16 @@ export async function getAreaLabel({ lat, lng }: { lat: number; lng: number }): 
 export async function getSavedPlaces(
   ids: string[],
 ): Promise<{ place: Place; credibility: CredibilityResult }[]> {
+  if (DATA_MODE === "db") {
+    const found = await Promise.all(ids.map((id) => fetchVenues({ id })));
+    return found
+      .map((vs) => vs[0])
+      .filter((v): v is NonNullable<typeof v> => Boolean(v))
+      .map((v) => {
+        const place = venueToPlace(v, v.app_category ?? "see");
+        return { place, credibility: venueCredibility(v) };
+      });
+  }
   const places = await fetchAllPlaces(BANGKOK_CENTER.lat, BANGKOK_CENTER.lng);
   const byId = new Map(places.map((p) => [p.id, p]));
   return ids
@@ -356,6 +376,27 @@ export async function resolvePastedPlace(input: string): Promise<ResolvedPaste> 
   const trimmed = input.trim();
   const isUrl = /^https?:\/\//i.test(trimmed);
   const inputTokens = new Set(tokenize(trimmed));
+
+  // db mode: match against the REAL venue store via /api/venues?q= (same
+  // ≥50%-of-name-tokens rule, applied server-side over 126k venues).
+  if (DATA_MODE === "db") {
+    const tokens = [...inputTokens];
+    if (tokens.length) {
+      const venues = await fetchVenues({
+        q: tokens.join(" "),
+        lat: String(BANGKOK_CENTER.lat),
+        lng: String(BANGKOK_CENTER.lng),
+        limit: "1",
+      });
+      const v = venues[0];
+      if (v) {
+        const place = venueToPlace(v, v.app_category ?? "see");
+        return { status: "matched", place, credibility: venueCredibility(v) };
+      }
+    }
+    const name = isUrl ? labelForUrl(trimmed) : trimmed.slice(0, 60) || "Saved place";
+    return { status: "unverified", name, sourceUrl: isUrl ? trimmed : undefined };
+  }
 
   const places = await fetchAllPlaces(BANGKOK_CENTER.lat, BANGKOK_CENTER.lng);
   let best: { place: Place; score: number } | null = null;

@@ -90,3 +90,29 @@ export function nominatimLookup(query: string, near?: { lat: number; lng: number
   chain = result.catch(() => {}); // keep the queue alive on errors
   return result;
 }
+
+/** Reverse-geocode to a human area label ("Khlong Toei, Bangkok"), English
+ *  preferred. Same serial queue + disk cache as lookup (≤1 req/s total). */
+export function nominatimReverse(lat: number, lng: number): Promise<string | null> {
+  const key = `rev|${lat.toFixed(3)},${lng.toFixed(3)}`;
+  const result = chain.then(async () => {
+    const cache = readCache() as Record<string, unknown>;
+    if (key in cache) return cache[key] as string | null;
+    const wait = Math.max(0, lastRequestAt + MIN_GAP_MS - Date.now());
+    if (wait > 0) await new Promise((r) => setTimeout(r, wait));
+    lastRequestAt = Date.now();
+    const params = new URLSearchParams({ lat: String(lat), lon: String(lng), format: "jsonv2", zoom: "14", "accept-language": "en" });
+    const res = await fetch(`https://nominatim.openstreetmap.org/reverse?${params}`, { headers: { "User-Agent": USER_AGENT } });
+    if (!res.ok) return null; // transient: don't cache
+    const j = (await res.json()) as { address?: Record<string, string> };
+    const a = j.address ?? {};
+    const area = a.neighbourhood ?? a.suburb ?? a.quarter ?? a.city_district ?? a.borough ?? null;
+    const city = a.city ?? a.town ?? a.municipality ?? a.state ?? null;
+    const label = area && city ? `${area}, ${city}` : city ?? area ?? null;
+    (cache as Record<string, string | null>)[key] = label;
+    writeCache(cache as never);
+    return label;
+  });
+  chain = result.catch(() => {});
+  return result as Promise<string | null>;
+}
