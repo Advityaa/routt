@@ -75,6 +75,8 @@ export default function ExplorePage() {
   const [city, setCity] = useState<CityDef>(CITIES[0]);
   const [hour, setHour] = useState(new Date().getHours());
   const [phIdx, setPhIdx] = useState(0);
+  const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const [areaLabel, setAreaLabel] = useState<string | null>(null);
   const [rows, setRows] = useState<{ seeing: CardData[]; attractions: CardData[]; near: CardData[] }>({ seeing: [], attractions: [], near: [] });
 
   useEffect(() => {
@@ -82,6 +84,10 @@ export default function ExplorePage() {
     const h = Number(q.get("hour"));
     if (Number.isFinite(h) && h >= 0 && h <= 23) setHour(h);
     setCity(getActiveCity());
+    const at = new URLSearchParams(window.location.search).get("at");
+    const [la, ln] = (at ?? "").split(",").map(Number);
+    if (Number.isFinite(la) && Number.isFinite(ln)) setCoords({ lat: la, lng: ln });
+    else navigator?.geolocation?.getCurrentPosition((pos) => setCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude }), () => {}, { timeout: 8000 });
     const t = setInterval(() => setPhIdx((i) => (i + 1) % 5), 2500);
     return () => clearInterval(t);
   }, []);
@@ -102,6 +108,26 @@ export default function ExplorePage() {
     })();
     return () => { alive = false; };
   }, [city, hour]);
+
+  useEffect(() => {
+    if (!coords) return;
+    let alive = true;
+    fetch(`/api/arealabel?lat=${coords.lat.toFixed(4)}&lng=${coords.lng.toFixed(4)}`).then((r) => r.json()).then((d) => alive && d.label && setAreaLabel(d.label)).catch(() => {});
+    fetch(`/api/nearby?lat=${coords.lat}&lng=${coords.lng}&radius=2000`).then((r) => (r.ok ? r.json() : null)).then((d) => {
+      if (!alive || !d?.venues?.length) return;
+      const card = (v: { id: string; name: string | null; category: string; distance_m: number; area: string | null }) => ({
+        id: v.id, name: v.name ?? "(unnamed on OSM)",
+        meta: `${v.distance_m < 1000 ? v.distance_m + " m" : (v.distance_m / 1000).toFixed(1) + " km"}${v.area ? " · " + v.area : ""}`,
+        photo: getVenueImage(v.category as never, v.id), verdict: "unrated" as const,
+      });
+      setRows({
+        seeing: d.venues.filter((v: { category: string }) => v.category === "see").slice(0, 10).map(card),
+        attractions: d.venues.filter((v: { category: string }) => v.category === "shop").slice(0, 10).map(card),
+        near: d.venues.filter((v: { category: string }) => v.category === "eat" || v.category === "drink").slice(0, 12).map(card),
+      });
+    }).catch(() => {});
+    return () => { alive = false; };
+  }, [coords]);
 
   return (
     <main className="mx-auto min-h-[100dvh] max-w-[440px] bg-canvas pb-28">
@@ -149,7 +175,7 @@ export default function ExplorePage() {
 
       <Carousel title="Worth seeing now" cards={rows.seeing} />
       <Carousel title="Popular attractions" cards={rows.attractions} />
-      <Carousel title="Near you" cards={rows.near} />
+      <Carousel title={areaLabel ? `Near you · ${areaLabel}` : "Near you"} cards={rows.near} />
 
       {process.env.NEXT_PUBLIC_DATA_MODE === "db" ? (
         <footer className="mt-10 border-t border-line px-5 pt-4 text-center font-mono text-[10.5px] text-faint">
