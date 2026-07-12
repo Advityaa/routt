@@ -48,14 +48,40 @@ const TEMPLATES: Record<string, Record<string, Act[]>> = {
 
 export default function DoPage() {
   const [city, setCity] = useState<CityDef>(CITIES[0]);
-  useEffect(() => { setCity(getActiveCity()); }, []);
+  const [viator, setViator] = useState<{ id: string; title: string; image: string | null; rating: number | null; reviewCount: number | null; priceFrom: number | null; currency: string | null; durationText: string | null; bookingUrl: string }[] | null>(null);
+  useEffect(() => {
+    const c = getActiveCity(); setCity(c);
+    fetch(`/api/experiences?city=${encodeURIComponent(c.label)}&country=${c.country}`)
+      .then((r) => r.json()).then((d) => { if (d.source === "viator" && d.count) setViator(d.experiences); })
+      .catch(() => {});
+  }, []);
   const rows = TEMPLATES[city.id] ?? TEMPLATES.bangkok;
   return (
     <main className="mx-auto min-h-[100dvh] max-w-[440px] bg-canvas pb-28">
-      <header className="px-5 pb-4 pt-6" style={{ background: "linear-gradient(180deg, rgba(154,100,16,0.07), transparent)" }}>
-        <div className="font-mono text-[10.5px] uppercase tracking-[0.1em] text-muted">Activities · {city.label} · curated</div>
+      <header data-src={viator ? "viator" : "curated"} className="px-5 pb-4 pt-6" style={{ background: "linear-gradient(180deg, rgba(154,100,16,0.07), transparent)" }}>
+        <div className="font-mono text-[10.5px] uppercase tracking-[0.1em] text-muted">Activities · {city.label} · {viator ? "live via Viator" : "curated"}</div>
         <h1 className="mt-1 font-display text-[30px] font-medium tracking-[-0.01em] text-fg">Do something you&apos;ll retell</h1>
       </header>
+      {viator ? (
+        <section className="mt-5">
+          <h2 className="px-5 pb-2.5 font-mono text-[10.5px] uppercase tracking-[0.1em] text-muted">Top experiences</h2>
+          <div className="flex gap-3 overflow-x-auto px-5 pb-1">
+            {viator.map((e) => (
+              <a key={e.id} href={e.bookingUrl} target="_blank" rel="sponsored noopener noreferrer" className="w-[200px] shrink-0">
+                <div className="relative h-[150px] overflow-hidden bg-elevate" style={{ borderRadius: 16 }}>
+                  {e.image ? <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${e.image})` }} /> : null}
+                  <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(10,9,6,0.02) 28%, rgba(10,9,6,0.55) 65%, rgba(10,9,6,0.92) 100%)" }} />
+                  {e.rating ? <span className="absolute right-2 top-2 rounded-pill bg-white/85 px-2 py-0.5 font-mono text-[9.5px] text-fg">★ {e.rating.toFixed(1)}{e.reviewCount ? ` (${e.reviewCount})` : ""}</span> : null}
+                  <div className="absolute inset-x-3 bottom-2.5 text-white"><div className="line-clamp-2 font-display text-[15px] font-medium leading-[1.2]">{e.title}</div></div>
+                </div>
+                <div className="mt-1.5 flex justify-between px-0.5 font-mono text-[11px] text-muted">
+                  <span>{e.durationText ?? "—"}</span><span className="text-fg">{e.priceFrom ? `from $${e.priceFrom}` : "Book on Viator"}</span>
+                </div>
+              </a>
+            ))}
+          </div>
+        </section>
+      ) : null}
       {Object.entries(rows).map(([title, acts]) => (
         <section key={title} className="mt-5">
           <h2 className="px-5 pb-2.5 font-mono text-[10.5px] uppercase tracking-[0.1em] text-muted">{title}</h2>

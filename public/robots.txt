@@ -1,0 +1,5 @@
+# Viator compliance: protected/unique content (reviews etc.) must never be
+# indexable. Any future route serving it is client-fetched AND blocked here.
+User-agent: *
+Disallow: /api/viator-content
+Allow: /
