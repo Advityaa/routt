@@ -91,7 +91,7 @@ export default function PlaceDetailPage({ params }: { params: { id: string } }) 
 
   if (!loading && !detail) {
     return (
-      <main className="mx-auto min-h-[100dvh] max-w-[440px] bg-canvas px-5 pt-9">
+      <main className="w-full min-h-[100dvh] bg-canvas px-5 pt-9">
         <Link href="/" className="font-mono text-[12.5px] text-muted">← Back</Link>
         <p className="mt-10 text-center font-mono text-[13px] text-muted">We don&apos;t have this place.</p>
       </main>
@@ -99,7 +99,7 @@ export default function PlaceDetailPage({ params }: { params: { id: string } }) 
   }
   if (!detail) {
     return (
-      <main className="mx-auto min-h-[100dvh] max-w-[440px] bg-canvas">
+      <main className="w-full min-h-[100dvh] bg-canvas">
         <div className="h-[360px] animate-pulse bg-elevate" />
       </main>
     );
@@ -113,7 +113,7 @@ export default function PlaceDetailPage({ params }: { params: { id: string } }) 
   const heroUrl = place.photos?.[0]?.url ?? getVenueImage(place.category, place.id);
 
   return (
-    <main className="mx-auto min-h-[100dvh] max-w-[440px] bg-canvas pb-[110px]">
+    <main className="w-full min-h-[100dvh] bg-canvas pb-[110px]">
       {/* HERO — photo bg div (degrades to flat color), scrim, glass nav */}
       <section className="relative h-[360px] overflow-hidden bg-[#2a241c]">
         <div className="kenburns absolute -inset-5 bg-cover bg-center" style={{ backgroundImage: `url(${heroUrl})` }} />
@@ -204,7 +204,7 @@ export default function PlaceDetailPage({ params }: { params: { id: string } }) 
       </div>
 
       {/* STICKY CTA */}
-      <div className="fixed bottom-0 left-1/2 z-[5] w-full max-w-[440px] -translate-x-1/2 px-[22px] pb-[26px] pt-[30px]" style={{ background: "linear-gradient(180deg, rgba(250,246,237,0) 0%, var(--canvas) 30%)" }}>
+      <div className="fixed bottom-0 left-1/2 z-[5] w-full -translate-x-1/2 px-[22px] pb-[26px] pt-[30px]" style={{ background: "linear-gradient(180deg, rgba(250,246,237,0) 0%, var(--canvas) 30%)" }}>
         <button onClick={() => setSaved(toggleSaved(id))}
           className={`flex w-full items-center justify-center gap-2 rounded-pill border-[1.5px] py-[15px] text-[14px] font-semibold transition ${saved ? "border-fg bg-canvas text-fg" : "border-fg bg-fg text-canvas"}`}>
           {saved ? <><Check size={15} strokeWidth={2.4} /> Saved to trip</> : "Save to trip"}

@@ -91,7 +91,7 @@ export default function TripPage() {
   }
 
   return (
-    <main className="mx-auto min-h-[100dvh] max-w-[440px] bg-canvas px-5 pb-28 pt-9">
+    <main className="w-full min-h-[100dvh] bg-canvas px-5 pb-28 pt-9">
       <Link href="/" className="inline-block font-mono text-[12.5px] text-muted transition hover:text-fg">
         ← Back
       </Link>

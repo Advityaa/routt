@@ -11,10 +11,9 @@ import { MapPin, Bookmark, Plane, Calendar } from "lucide-react";
  * four top-level screens; hidden on pushed/sub screens (place detail, etc).
  */
 const TABS = [
-  { href: "/", label: "Now", Icon: MapPin },
+  { href: "/", label: "Experiences", Icon: MapPin },
+  { href: "/arrival", label: "Flights", Icon: Plane },
   { href: "/trip", label: "Trip", Icon: Bookmark },
-  { href: "/arrival", label: "Arrival", Icon: Plane },
-  { href: "/events", label: "Events", Icon: Calendar },
 ] as const;
 
 const MAIN_ROUTES = new Set<string>(TABS.map((t) => t.href));
@@ -35,10 +34,10 @@ export default function BottomNav() {
   return (
     <nav
       aria-label="Primary"
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-canvas/95 backdrop-blur"
-      style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+      className="fixed inset-x-5 z-40 md:hidden transition-all duration-300"
+      style={{ bottom: "calc(14px + env(safe-area-inset-bottom))" }}
     >
-      <ul className="mx-auto flex max-w-[440px] items-stretch justify-around px-2 pt-1.5">
+      <ul className="mx-auto flex max-w-[400px] items-center justify-around rounded-full border border-line bg-surface/95 px-2 py-2 shadow-[0_16px_40px_-16px_rgba(28,26,22,0.45)] backdrop-blur-xl">
         {TABS.map(({ href, label, Icon }) => {
           const active = pathname === href;
           return (
@@ -46,14 +45,12 @@ export default function BottomNav() {
               <Link
                 href={href + keep}
                 aria-current={active ? "page" : undefined}
-                className={`flex min-h-[52px] flex-col items-center justify-center gap-1 rounded-badge py-1 transition ${
-                  active ? "text-accent" : "text-muted hover:text-fg"
+                className={`flex h-10 items-center gap-2 rounded-full px-4 transition-all active:scale-95 duration-200 ${
+                  active ? "bg-accent/10 text-accent font-semibold" : "text-muted hover:text-fg hover:bg-elevate"
                 }`}
               >
-                <Icon size={21} strokeWidth={active ? 2 : 1.6} aria-hidden />
-                <span className={`font-sans text-[10px] tracking-wide ${active ? "font-semibold" : "font-medium"}`}>
-                  {label}
-                </span>
+                <Icon size={19} strokeWidth={active ? 2.5 : 2} aria-hidden />
+                {active ? <span className="font-sans text-[13px] tracking-wide font-semibold">{label}</span> : null}
               </Link>
             </li>
           );

@@ -58,7 +58,7 @@ export default function EventsPage() {
   }
 
   return (
-    <main className="mx-auto min-h-[100dvh] max-w-[440px] bg-canvas px-5 pb-28 pt-9">
+    <main className="w-full min-h-[100dvh] bg-canvas px-5 pb-28 pt-9">
       <header>
         <div className="text-eyebrow uppercase text-muted">Bangkok · this week</div>
         <h1 className="mt-1.5 font-display text-display font-semibold tracking-tight text-fg">

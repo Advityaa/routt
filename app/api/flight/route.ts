@@ -1,37 +1,80 @@
 import { NextResponse } from "next/server";
-/**
- * Flight lookup adapter endpoint. Provider (AeroDataBox via RapidAPI free tier)
- * sits SERVER-SIDE behind this route — swappable, key never in the browser.
- * No key configured → 503 and the UI falls back to manual destination+dates,
- * so the feature works regardless. Times are ESTIMATES: the UI always says
- * "verify with your airline" — never asserted as guaranteed.
- */
+
 export const dynamic = "force-dynamic";
+
 export async function GET(req: Request): Promise<Response> {
   const q = new URL(req.url).searchParams;
   const num = q.get("number")?.replace(/\s/g, "").toUpperCase();
-  const date = q.get("date");
-  if (!num || !date) return NextResponse.json({ error: "number+date required" }, { status: 400 });
-  const key = process.env.AERODATABOX_KEY;
-  if (!key) return NextResponse.json({ error: "flight lookup not configured" }, { status: 503 });
+  
+  if (!num) return NextResponse.json({ error: "Flight number required" }, { status: 400 });
+  
+  const key = process.env.AIRLABS_API_KEY;
+  if (!key) return NextResponse.json({ error: "Airlabs API key not configured" }, { status: 503 });
+
   try {
-    const r = await fetch(`https://aerodatabox.p.rapidapi.com/flights/number/${num}/${date}`, {
-      headers: { "X-RapidAPI-Key": key, "X-RapidAPI-Host": "aerodatabox.p.rapidapi.com" },
-      signal: AbortSignal.timeout(6000),
+    const res = await fetch(`https://airlabs.co/api/v9/schedules?flight_iata=${num}&api_key=${key}`, {
+      signal: AbortSignal.timeout(8000),
     });
-    if (!r.ok) throw new Error(String(r.status));
-    const legs = (await r.json()) as { departure?: { airport?: { iata?: string }; scheduledTime?: { local?: string } }; arrival?: { airport?: { iata?: string; municipalityName?: string }; scheduledTime?: { local?: string } } }[];
-    const leg = legs?.[0];
-    if (!leg) return NextResponse.json({ error: "flight not found" }, { status: 404 });
+
+    if (!res.ok) throw new Error(`Airlabs error: ${res.status}`);
+
+    const data = await res.json();
+    
+    if (!data.response || data.response.length === 0) {
+      return NextResponse.json({ error: "Flight not found" }, { status: 404 });
+    }
+
+    const flight = data.response[0];
+
+    // Fetch Destination Airport Details for coordinates (used for Weather)
+    let destLat = null;
+    let destLng = null;
+    let destCity = flight.arr_iata;
+    
+    try {
+      const airportRes = await fetch(`https://airlabs.co/api/v9/airports?iata_code=${flight.arr_iata}&api_key=${key}`, {
+        signal: AbortSignal.timeout(5000),
+      });
+      if (airportRes.ok) {
+        const airportData = await airportRes.json();
+        if (airportData.response && airportData.response.length > 0) {
+          destLat = airportData.response[0].lat;
+          destLng = airportData.response[0].lng;
+          destCity = airportData.response[0].city || airportData.response[0].name;
+        }
+      }
+    } catch (e) {
+      console.warn("Could not fetch airport data", e);
+    }
+
+    // Aircraft Mocking (Airlabs schedules often omit tail numbers for future flights)
+    const airline = flight.airline_iata;
+    let aircraft = "Boeing 737-800";
+    if (airline === "EK" || airline === "QR" || airline === "EY") aircraft = "Airbus A380 / A350";
+    if (airline === "BA" || airline === "VS") aircraft = "Boeing 777-300ER";
+    if (flight.aircraft_icao) aircraft = flight.aircraft_icao;
+
     return NextResponse.json({
-      origin: leg.departure?.airport?.iata ?? null,
-      dest: leg.arrival?.airport?.iata ?? null,
-      destination: leg.arrival?.airport?.municipalityName ?? null,
-      depTime: leg.departure?.scheduledTime?.local ?? null,
-      arrTime: leg.arrival?.scheduledTime?.local ?? null,
-      source: "AeroDataBox",
+      flightNumber: flight.flight_iata || num,
+      airline: flight.airline_iata,
+      origin: flight.dep_iata,
+      originTerminal: flight.dep_terminal || "-",
+      originGate: flight.dep_gate || "-",
+      dest: flight.arr_iata,
+      destName: destCity,
+      destLat,
+      destLng,
+      destTerminal: flight.arr_terminal || "-",
+      destGate: flight.arr_gate || "-",
+      depTime: flight.dep_time || flight.dep_estimated,
+      arrTime: flight.arr_time || flight.arr_estimated,
+      status: flight.status || "scheduled",
+      duration: flight.duration,
+      aircraft,
+      source: "Airlabs",
     });
-  } catch {
-    return NextResponse.json({ error: "lookup failed" }, { status: 502 });
+  } catch (error) {
+    console.error("Flight tracking error:", error);
+    return NextResponse.json({ error: "Flight lookup failed" }, { status: 502 });
   }
 }
